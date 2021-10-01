@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frikiteam/views/listevent_page.dart';
 import 'package:frikiteam/views/register_page.dart';
 
 void main() {
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: RegisterPage()
+      home: ListEventPage()
     );
   }
 }
