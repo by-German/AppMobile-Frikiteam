@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frikiteam/views/home_page.dart';
+import 'package:frikiteam/views/user_profile.dart';
 
 class ListEventPage extends StatelessWidget{
 
@@ -7,8 +8,10 @@ class ListEventPage extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.person, size: 50,), actions: [ Image.asset("assets/images/logo.png", width: 150,), ],
-        backgroundColor: Colors.black,
+        leading: IconButton(onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => UserProfile()));
+        },icon: Icon(Icons.person), iconSize: 50,), actions: [ Image.asset("assets/images/logo.png", width: 150,), ],
+        backgroundColor: Color.fromRGBO(24, 22, 26, 1),
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) {
@@ -24,7 +27,7 @@ class ListEventPage extends StatelessWidget{
           BottomNavigationBarItem(icon: Icon(Icons.notifications), label: "notify")
         ],
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: Color.fromRGBO(24, 22, 26, 1),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
         child: Center(
@@ -80,7 +83,7 @@ class ListEventPage extends StatelessWidget{
   Widget _crearCard2(){
     return Card(
       elevation: 5,
-      color: Colors.black,
+      color:  Color.fromRGBO(24, 22, 26, 1),
 
       child: Container(
         padding: EdgeInsets.all(20),
@@ -122,7 +125,7 @@ class ListEventPage extends StatelessWidget{
   Widget _crearCard4(){
     return Card(
       elevation: 5,
-      color: Colors.black,
+      color: Color.fromRGBO(24, 22, 26, 1),
 
       child: Container(
         padding: EdgeInsets.all(20),
