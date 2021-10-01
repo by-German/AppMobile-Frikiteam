@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frikiteam/views/login_page.dart';
 
 class RegisterPage extends StatefulWidget{
   RegisterPage({Key? key}) : super(key: key);
@@ -26,7 +27,7 @@ class _RegisterPageState extends State<RegisterPage>{
             ),
             ),
             child: Image.asset("assets/images/logo.png"),
-            height: 180,
+            height: 168,
           ),
           Center(
             child: SingleChildScrollView(
@@ -41,6 +42,7 @@ class _RegisterPageState extends State<RegisterPage>{
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
+                      SizedBox(height: 20),
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -69,21 +71,6 @@ class _RegisterPageState extends State<RegisterPage>{
                               hintStyle: TextStyle(color: Colors.grey, fontSize: 16,)
                           ),
                           obscureText: true,
-                        ),
-                      ),
-                      SizedBox(height: 12,),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          color: Colors.white,
-                        ),
-                        child: TextField(
-                          decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(20),
-                              border: OutlineInputBorder(),
-                              hintText: "Number:",
-                              hintStyle: TextStyle(color: Colors.grey, fontSize: 16,)
-                          ),
                         ),
                       ),
                       SizedBox(height: 12,),
@@ -131,7 +118,7 @@ class _RegisterPageState extends State<RegisterPage>{
                           ),
                         ),
                       ),
-                      SizedBox(height: 12,),
+                      SizedBox(height: 25),
                       RaisedButton(
                         color: Colors.purple[200],
                         textColor: Colors.white,
@@ -165,7 +152,9 @@ class _RegisterPageState extends State<RegisterPage>{
                           ),
                           FlatButton(
                               textColor: Colors.purple[200],
-                              onPressed: (){},
+                              onPressed: (){
+                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+                              },
                               child: Text("Log in")
                           ),
                         ],

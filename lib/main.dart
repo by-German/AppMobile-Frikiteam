@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frikiteam/views/register_page.dart';
+import 'package:frikiteam/views/login_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: RegisterPage()
+      home: LoginPage()
     );
   }
 }
