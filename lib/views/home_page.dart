@@ -17,6 +17,19 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(leading: Icon(Icons.person, size: 60,), actions: [ Image.asset("assets/images/logo.png", width: 150,), ], backgroundColor: Color.fromRGBO(24, 22, 26, 1),),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (index) {
+          if (index == 1)
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+        },
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: "search"),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: "notify")
+        ],
+      ),
       body: ListView(
         children: <Widget>[
           Container(
