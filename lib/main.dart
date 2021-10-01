@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frikiteam/views/register_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,12 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("App bar"),
-        ),
-        body: Image.asset("assets/images/logo.png"),
-      )
+      home: RegisterPage()
     );
   }
 }
