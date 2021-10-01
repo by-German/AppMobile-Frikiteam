@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/component.dart';
+import 'package:frikiteam/views/list_events_page.dart';
 import 'package:frikiteam/views/nav_bar.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,11 +17,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(leading: Icon(Icons.person, size: 60,), actions: [ Image.asset("assets/images/logo.png", width: 150,), ], backgroundColor: Color.fromRGBO(24, 22, 26, 1),),
+      appBar: AppBar(leading: Icon(Icons.person, size: 50,), actions: [ Image.asset("assets/images/logo.png", width: 150,), ], backgroundColor: Color.fromRGBO(24, 22, 26, 1),),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) {
           if (index == 1)
-            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => ListEventPage()));
         },
         showSelectedLabels: false,
         showUnselectedLabels: false,
