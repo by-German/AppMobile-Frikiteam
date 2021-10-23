@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frikiteam/views/create/general_information.dart';
 import 'package:frikiteam/views/home_page.dart';
 import 'package:frikiteam/views/list_events_page.dart';
 
@@ -18,7 +19,8 @@ Widget bottomNav(BuildContext context, int index) {
           print("navigation for follows events and organizers");
           break;
         case 3:
-          print("navigation for create event");
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => GeneralInformation()));
           break;
         }
     },
