@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frikiteam/components/bottom_bar.dart';
+import 'package:frikiteam/components/nav_bar.dart';
 import 'package:frikiteam/views/home_page.dart';
 import 'package:frikiteam/views/list_events_page.dart';
 import 'package:frikiteam/views/login_page.dart';
@@ -16,30 +18,8 @@ class _UserProfileState extends State<UserProfile>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(onPressed: () {
-
-        },icon: Icon(Icons.person), iconSize: 50,),
-        actions: [ Image.asset("assets/images/logo.png", width: 150,), ],
-        backgroundColor: Color.fromRGBO(24, 22, 26, 1),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) {
-          if (index == 1)
-            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => ListEventPage()));
-          if (index == 0)
-            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => HomePage()));
-
-        },
-
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: "search"),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: "notify")
-        ],
-      ),
+      appBar: navBar(context),
+      bottomNavigationBar: bottomNav(context),
       backgroundColor: Color.fromRGBO(24, 22, 26, 1),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
