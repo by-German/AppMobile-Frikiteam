@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frikiteam/views/home_page.dart';
 import 'package:frikiteam/views/list_events_page.dart';
 
-Widget bottomNav(BuildContext context) {
+Widget bottomNav(BuildContext context, int index) {
   return BottomNavigationBar(
     onTap: (index) {
       switch (index) {
@@ -20,10 +20,11 @@ Widget bottomNav(BuildContext context) {
         case 3:
           print("navigation for create event");
           break;
-      }
+        }
     },
     showSelectedLabels: false,
     showUnselectedLabels: false,
+    currentIndex: index,
     type: BottomNavigationBarType.fixed,
     items: [
       BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),

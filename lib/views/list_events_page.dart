@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
-import 'package:frikiteam/views/home_page.dart';
 
 class ListEventPage extends StatelessWidget{
 
@@ -9,7 +8,7 @@ class ListEventPage extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: navBar(context),
-      bottomNavigationBar: bottomNav(context),
+      bottomNavigationBar: bottomNav(context, 1),
       backgroundColor: Color.fromRGBO(24, 22, 26, 1),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),

@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
-import 'package:frikiteam/views/home_page.dart';
-import 'package:frikiteam/views/list_events_page.dart';
 import 'package:frikiteam/views/login_page.dart';
 
 class UserProfile extends StatefulWidget{
@@ -19,7 +17,7 @@ class _UserProfileState extends State<UserProfile>{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: navBar(context),
-      bottomNavigationBar: bottomNav(context),
+      bottomNavigationBar: bottomNav(context, 0),
       backgroundColor: Color.fromRGBO(24, 22, 26, 1),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),

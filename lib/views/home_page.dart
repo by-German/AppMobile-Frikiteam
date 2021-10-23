@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: navBar(context),
-      bottomNavigationBar: bottomNav(context),
+      bottomNavigationBar: bottomNav(context, 0),
       body: ListView(
         children: <Widget>[
           Container(color: Color.fromRGBO(24, 22, 26, 1), child: this.first()),
