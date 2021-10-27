@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frikiteam/views/create/general_information.dart';
+import 'package:frikiteam/views/create/my_events.dart';
 import 'package:frikiteam/views/home_page.dart';
 import 'package:frikiteam/views/list_events_page.dart';
 
@@ -20,7 +21,7 @@ Widget bottomNav(BuildContext context, int index) {
           break;
         case 3:
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => GeneralInformation()));
+            builder: (context) => MyEvents()));
           break;
         }
     },

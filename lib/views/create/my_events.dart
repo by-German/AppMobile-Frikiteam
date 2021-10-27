@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:frikiteam/views/create/general_information.dart';
 
 class MyEvents extends StatelessWidget {
   const MyEvents({Key? key}) : super(key: key);
@@ -28,6 +29,8 @@ class MyEvents extends StatelessWidget {
               padding: const EdgeInsets.only(top: 30, left: 130, right: 130),
               child: ElevatedButton(
                 onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => GeneralInformation()));
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
