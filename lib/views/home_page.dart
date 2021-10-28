@@ -229,7 +229,7 @@ class _HomePageState extends State<HomePage> {
         Container(
           width: 180,
           height: 360,
-          color: Color.fromRGBO(246, 246, 255, 1),
+          color: Color.fromRGBO(24, 22, 26, 1),
           alignment: Alignment.topCenter,
           child: Column(
             children: <Widget>[
