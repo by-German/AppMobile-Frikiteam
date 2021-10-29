@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
 
+import 'detailed_information.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -102,7 +104,9 @@ class _HomePageState extends State<HomePage> {
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 16)))),
               FlatButton(
-                onPressed: () {},
+                onPressed: () {
+
+                },
                 child: Text("Informacion",
                     style: TextStyle(
                         color: Colors.white,
