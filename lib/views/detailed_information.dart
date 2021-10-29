@@ -126,6 +126,15 @@ class _DetailedInformationState extends State<DetailedInformation>{
                 keyboardType: TextInputType.text,
               ),
               SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  onPressed: () {
+                  },
+                  icon: Icon(Icons.add, color: Colors.white,),
+                  iconSize: 30,
+                ),
+              ),
               Align(  alignment: Alignment.centerLeft,
 
                 child: Text('Information Detailed', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,  color: Colors.white), ),
@@ -179,6 +188,15 @@ class _DetailedInformationState extends State<DetailedInformation>{
                 ],
               ),
               SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  onPressed: () {
+                  },
+                  icon: Icon(Icons.add, color: Colors.white,),
+                  iconSize: 30,
+                ),
+              ),
       ]
 
         ),
