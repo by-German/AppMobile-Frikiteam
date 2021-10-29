@@ -50,6 +50,8 @@ class _DetailedInformationState extends State<DetailedInformation>{
         padding: EdgeInsets.all(20),
         child: Column(
             children: [
+              Text('Itinerario', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30,  color: Colors.white),),
+              SizedBox(height: 15,),
               TextField(
               decoration: InputDecoration(
               labelText: "Itinerary 1",
@@ -96,6 +98,38 @@ class _DetailedInformationState extends State<DetailedInformation>{
                 keyboardType: TextInputType.text,
               ),
               SizedBox(height: 10),
+              Text('Information Detailed', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30,  color: Colors.white),),
+              SizedBox(height: 15,),
+              TextField(
+                decoration: InputDecoration(
+                    labelText: "Title for content 1",
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    fillColor: Colors.white,
+                    filled: true
+                ),
+                keyboardType: TextInputType.text,
+              ),
+              SizedBox(height: 10),
+              TextField(
+                decoration: InputDecoration(
+                    labelText: "Description for content 1",
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    fillColor: Colors.white,
+                    filled: true
+                ),
+                keyboardType: TextInputType.text,
+              ),
+              SizedBox(height: 19),
       ]
 
         ),
