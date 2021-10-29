@@ -49,24 +49,55 @@ class _DetailedInformationState extends State<DetailedInformation>{
       child: Container(
         padding: EdgeInsets.all(20),
         child: Column(
-          children: <Widget> [
-            new Container(
-                width: 120.0,
-                height: 120.0,
-                decoration: new BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: new DecorationImage(
-                        fit: BoxFit.fill,
-                        image: new NetworkImage(
-                            "https://i.imgur.com/BoN9kdC.png")
-                    )
-                )),
-            Text('Usuario Friki', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30,  color: Colors.white),),
-            SizedBox(height: 15,),
-            Text('Editar perfil', style: TextStyle(color: Colors.pink[300], fontWeight: FontWeight.bold, decoration: TextDecoration.underline, fontSize: 16), ),
-            SizedBox(height: 15,),
-            Text('Siguiendo: 3                      Eventos: 2', style: TextStyle(color: Colors.white, fontSize: 16),)
-          ],
+            children: [
+              TextField(
+              decoration: InputDecoration(
+              labelText: "Itinerary 1",
+                  border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white)
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  fillColor: Colors.white,
+                  filled: true
+              ),
+              keyboardType: TextInputType.text,
+            ),
+            SizedBox(height: 10),
+
+              TextField(
+                decoration: InputDecoration(
+                    labelText: "Itinerary 2",
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    fillColor: Colors.white,
+                    filled: true
+                ),
+                keyboardType: TextInputType.text,
+              ),
+              SizedBox(height: 10),
+              TextField(
+                decoration: InputDecoration(
+                    labelText: "Itinerary 3",
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    fillColor: Colors.white,
+                    filled: true
+                ),
+                keyboardType: TextInputType.text,
+              ),
+              SizedBox(height: 10),
+      ]
+
         ),
       ),
     );
