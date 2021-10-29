@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
-import 'package:frikiteam/views/login_page.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
 
 class DetailedInformation extends StatefulWidget{
   DetailedInformation({Key? key}) : super(key: key);
@@ -12,6 +14,29 @@ class DetailedInformation extends StatefulWidget{
 
 class _DetailedInformationState extends State<DetailedInformation>{
   bool _loading = false;
+
+  String imagePath = "";
+
+  openGallery() async {
+    final ImagePicker _picker = ImagePicker();
+    var picture = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      imagePath = picture!.path;
+    });
+  }
+
+  Widget imageSelected() {
+    if (imagePath.isEmpty) {
+      return Container(
+        height: 250,
+        width: 250,
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.white30)
+        ),
+      );
+    }
+    return Image.file(File(imagePath), width: 250, height: 250, fit: BoxFit.cover,);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +75,10 @@ class _DetailedInformationState extends State<DetailedInformation>{
         padding: EdgeInsets.all(20),
         child: Column(
             children: [
-              Text('Itinerario', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30,  color: Colors.white),),
+              Align(  alignment: Alignment.centerLeft,
+
+                child: Text('Intineraries', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,  color: Colors.white), ),
+              ),
               SizedBox(height: 15,),
               TextField(
               decoration: InputDecoration(
@@ -98,7 +126,10 @@ class _DetailedInformationState extends State<DetailedInformation>{
                 keyboardType: TextInputType.text,
               ),
               SizedBox(height: 10),
-              Text('Information Detailed', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30,  color: Colors.white),),
+              Align(  alignment: Alignment.centerLeft,
+
+                child: Text('Information Detailed', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,  color: Colors.white), ),
+              ),
               SizedBox(height: 15,),
               TextField(
                 decoration: InputDecoration(
@@ -130,6 +161,24 @@ class _DetailedInformationState extends State<DetailedInformation>{
                 keyboardType: TextInputType.text,
               ),
               SizedBox(height: 19),
+
+              Stack(
+                children: [
+                  Center(child: imageSelected()),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 100),
+                    child: Center(
+                      child: MaterialButton(
+                        onPressed: openGallery,
+                        child: Text("Select Image", style: TextStyle(color: Colors.white),),
+                        color: Colors.deepPurple,
+                        minWidth: 200,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 20),
       ]
 
         ),
