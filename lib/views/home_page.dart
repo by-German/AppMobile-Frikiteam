@@ -105,8 +105,7 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(fontSize: 16)))),
               FlatButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => DetailedInformation()));
+
                 },
                 child: Text("Informacion",
                     style: TextStyle(

@@ -6,6 +6,8 @@ import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../detailed_information.dart';
+
 
 class GeneralInformation extends StatefulWidget {
   const GeneralInformation({Key? key}) : super(key: key);
@@ -256,7 +258,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
                             SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: () {
-                                // Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) => DetailedInformation()));
                               },
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
