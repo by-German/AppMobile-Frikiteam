@@ -10,7 +10,7 @@ PreferredSizeWidget navBar(BuildContext context) {
             builder: (BuildContext context) => UserProfile()));
       },
       icon: Icon(Icons.person),
-      iconSize: 50,
+      iconSize: 40,
     ),
     actions: [
       Image.asset(

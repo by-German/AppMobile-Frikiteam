@@ -9,7 +9,7 @@ class FollowPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: navBar(context),
-      bottomNavigationBar: bottomNav(context, 0),
+      bottomNavigationBar: bottomNav(context, 2),
       body: ListView(
         children: <Widget>[
           Column(

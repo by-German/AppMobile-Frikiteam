@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:frikiteam/views/detailevent_page.dart';
+import 'package:frikiteam/views/viewevent_page.dart';
 
 import 'detailed_information.dart';
 
@@ -105,7 +107,8 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(fontSize: 16)))),
               FlatButton(
                 onPressed: () {
-
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => ViewEventPage()));
                 },
                 child: Text("Informacion",
                     style: TextStyle(

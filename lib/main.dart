@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frikiteam/views/detailevent_page.dart';
-import 'package:frikiteam/views/list_events_page.dart';
-import 'package:frikiteam/views/register_page.dart';
+import 'package:frikiteam/views/home_page.dart';
 import 'package:frikiteam/views/viewevent_page.dart';
 
 
@@ -18,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ViewEventPage()
+      home: HomePage()
     );
   }
 }

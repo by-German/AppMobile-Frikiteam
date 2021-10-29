@@ -99,7 +99,7 @@ class LoginPage extends StatelessWidget {
                                 fixedSize: MaterialStateProperty.all<Size>(Size.fromWidth(500)),
                                 foregroundColor: MaterialStateProperty.all(Colors.black),
                               ),
-                              child: Text("Register"),
+                              child: Text("Register"),  
                             )
                           ],
                         ),

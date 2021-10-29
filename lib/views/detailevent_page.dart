@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frikiteam/components/bottom_bar.dart';
+import 'package:frikiteam/components/nav_bar.dart';
 
 class DetailEventPage extends StatelessWidget {
 
@@ -6,15 +8,8 @@ class DetailEventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {}, icon: Icon(Icons.person), iconSize: 50,),
-        actions: [
-          Image.asset("assets/images/logo.png", height: 10,)
-        ],
-        backgroundColor: Colors.black,
-      ),
-
+      appBar: navBar(context),
+      bottomNavigationBar: bottomNav(context, 0),
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
