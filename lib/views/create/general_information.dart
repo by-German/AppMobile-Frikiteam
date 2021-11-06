@@ -6,7 +6,7 @@ import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../detailed_information.dart';
+import 'detailed_information.dart';
 
 
 class GeneralInformation extends StatefulWidget {

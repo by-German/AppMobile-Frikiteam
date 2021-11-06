@@ -2,10 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
-import 'package:frikiteam/views/detailevent_page.dart';
-import 'package:frikiteam/views/viewevent_page.dart';
-
-import 'detailed_information.dart';
+import 'package:frikiteam/views/events/viewevent_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

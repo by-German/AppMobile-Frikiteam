@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frikiteam/views/create/general_information.dart';
 import 'package:frikiteam/views/create/my_events.dart';
-import 'package:frikiteam/views/follow_page.dart';
-import 'package:frikiteam/views/home_page.dart';
-import 'package:frikiteam/views/list_events_page.dart';
+import 'package:frikiteam/views/follows/follow_page.dart';
+import 'package:frikiteam/views/home/home_page.dart';
+import 'package:frikiteam/views/events/list_events_page.dart';
 
 Widget bottomNav(BuildContext context, int index) {
   return BottomNavigationBar(

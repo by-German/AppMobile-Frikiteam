@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frikiteam/views/home_page.dart';
-import 'package:frikiteam/views/register_page.dart';
-import 'package:frikiteam/views/user_profile.dart';
+import 'package:frikiteam/views/home/home_page.dart';
+import 'package:frikiteam/views/users/register_page.dart';
 
 class LoginPage extends StatelessWidget {
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frikiteam/views/user_profile.dart';
+import 'package:frikiteam/views/users/user_profile.dart';
 
 PreferredSizeWidget navBar(BuildContext context) {
   return AppBar(
@@ -10,12 +10,15 @@ PreferredSizeWidget navBar(BuildContext context) {
             builder: (BuildContext context) => UserProfile()));
       },
       icon: Icon(Icons.person),
-      iconSize: 40,
+      iconSize: 30,
     ),
     actions: [
-      Image.asset(
-        "assets/images/logo.png",
-        width: 150,
+      Padding(
+        padding: const EdgeInsets.only(right: 15),
+        child: Image.asset(
+          "assets/images/logo.png",
+          width: 120,
+        ),
       ),
     ],
     backgroundColor: Color.fromRGBO(24, 22, 26, 1),

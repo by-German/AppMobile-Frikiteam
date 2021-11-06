@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
-import 'package:frikiteam/views/login_page.dart';
+import 'package:frikiteam/views/users/login_page.dart';
 
 class UserProfile extends StatefulWidget{
   UserProfile({Key? key}) : super(key: key);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frikiteam/views/login_page.dart';
+import 'package:frikiteam/views/users/login_page.dart';
 
 class RegisterPage extends StatefulWidget{
   RegisterPage({Key? key}) : super(key: key);
