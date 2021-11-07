@@ -4,6 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:frikiteam/models/places/city.dart';
+import 'package:frikiteam/models/places/country.dart';
+import 'package:frikiteam/models/places/disctrict.dart';
+import 'package:frikiteam/services/places/place_service.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'detailed_information.dart';
@@ -17,6 +21,14 @@ class GeneralInformation extends StatefulWidget {
 }
 
 class _GeneralInformationState extends State<GeneralInformation> {
+  PlaceService placeService = PlaceService();
+  int? countryId;
+  List<Country> countries = [];
+  int? cityId;
+  List<City> cities = [];
+  int? districtId;
+  List<District> districts = [];
+
   String imagePath = "";
 
   openGallery() async {
@@ -39,14 +51,6 @@ class _GeneralInformationState extends State<GeneralInformation> {
     }
     return Image.file(File(imagePath), width: 250, height: 250, fit: BoxFit.cover,);
   }
-
-  String? country;
-  var countries = ["Peru", "Mexico"];
-  String? city;
-  var cities = ["Lima", "Arequipa"];
-  String? district;
-  var districts = ["Chorrillos", "Lima"];
-    
   
   DateTimeRange? dateRange;
 
@@ -77,6 +81,12 @@ class _GeneralInformationState extends State<GeneralInformation> {
       String dateEnd = '${end?.day}/${end?.month}/${end?.year}';
       return '$dateStart - $dateEnd';
     }
+  }
+
+  @override
+  void initState() {
+    getAllCountries();
+    super.initState();
   }
 
   @override
@@ -153,48 +163,57 @@ class _GeneralInformationState extends State<GeneralInformation> {
                             Container(
                               padding: const EdgeInsets.only(left: 15, right: 15),
                               color: Colors.white,
-                              child: DropdownButton<String>(
+                              child: DropdownButton<int>(
                                 hint: Text("Country"),
                                 underline: SizedBox(),
                                 isExpanded: true,
-                                value: country,
+                                value: countryId,
                                 items: countries.map((item) => DropdownMenuItem(
-                                  value: item,
-                                  child: Text(item),
+                                  value: item.id,
+                                  child: Text(item.name),
+                                  key: Key('$item'),
                                 )).toList(),
-                                onChanged: (value) => setState(() => this.country = value),
+                                onChanged: (value) => setState(() {
+                                  this.countryId = value;
+                                  getAllCities(this.countryId!);
+                                }),
                               ),
                             ),
                             SizedBox(height: 10),
                             Container(
                               padding: const EdgeInsets.only(left: 15, right: 15),
                               color: Colors.white,
-                              child: DropdownButton<String>(
+                              child: DropdownButton<int>(
                                 hint: Text("City"),
                                 underline: SizedBox(),
                                 isExpanded: true,
-                                value: city,
+                                value: cityId,
                                 items: cities.map((item) => DropdownMenuItem(
-                                  value: item,
-                                  child: Text(item),
+                                  value: item.id,
+                                  child: Text(item.name),
                                 )).toList(),
-                                onChanged: (value) => setState(() => this.city = value),
+                                onChanged: (value) => setState(() {
+                                    this.cityId = value;
+                                    getAllDistricts(this.cityId!);
+                                  }),
                               ),
                             ),
                             SizedBox(height: 10),
                             Container(
                               padding: const EdgeInsets.only(left: 15, right: 15),
                               color: Colors.white,
-                              child: DropdownButton<String>(
+                              child: DropdownButton<int>(
                                 hint: Text("District"),
                                 underline: SizedBox(),
                                 isExpanded: true,
-                                value: district,
+                                value: districtId,
                                 items: districts.map((item) => DropdownMenuItem(
-                                  value: item,
-                                  child: Text(item),
+                                  value: item.id,
+                                  child: Text(item.name),
                                 )).toList(),
-                                onChanged: (value) => setState(() => this.district = value),
+                                onChanged: (value) => setState(() {
+                                    this.districtId = value;
+                                  }),
                               ),
                             ),
                             SizedBox(height: 10),
@@ -278,5 +297,26 @@ class _GeneralInformationState extends State<GeneralInformation> {
             ],
           ),
         );
+  }
+
+  void getAllCountries() async {
+    var result = await placeService.getAllCountries();
+    setState(() {
+      countries = result;
+    });
+  }
+
+  void getAllCities(int countryId) async {
+    var result = await placeService.getAllCities(countryId);
+    setState(() {
+      cities = result;
+    });
+  }
+
+  void getAllDistricts(int cityId) async {
+    var result = await placeService.getAllDistricts(cityId);
+    setState(() {
+      districts = result;
+    });
   }
 }
