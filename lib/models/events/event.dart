@@ -25,7 +25,7 @@ class Event {
     String logo;
     String information;
     String name;
-    int price;
+    double price;
     int quantity;
     int sold;
     bool verified;
