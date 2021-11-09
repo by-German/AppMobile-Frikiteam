@@ -29,8 +29,8 @@ class Event {
     int quantity;
     int sold;
     bool verified;
-    int startDate;
-    int endDate;
+    dynamic startDate;
+    dynamic endDate;
     dynamic eventTypeId;
     int organizerId;
     int placeId;

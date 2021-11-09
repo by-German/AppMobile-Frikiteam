@@ -16,10 +16,11 @@ class EventsSevice {
     return Event.fromJson(jsonDecode(response.body));
   }
 
-  Future getAllEventsByName(String name) async {
+  Future<List<Event>> getAllEventsByName(String name) async {
     final uri = Uri.parse('$basePath/events/search').replace(queryParameters: {'name': name});    
     var response = await http.get(uri);
-    return jsonDecode(response.body).map((e) => Event.fromJson(e)).toList();
+    var events = jsonDecode(response.body) as List;
+    return events.map((e) => Event.fromJson(e)).toList();
   }
 
 }
