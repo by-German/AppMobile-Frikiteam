@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:frikiteam/models/places/city.dart';
 import 'package:frikiteam/models/places/country.dart';
 import 'package:frikiteam/models/places/disctrict.dart';
+import 'package:frikiteam/models/places/place.dart';
 import 'package:frikiteam/models/shared/pageable_response.dart';
 import 'package:frikiteam/services/common/http.common.dart';
 import 'package:http/http.dart' as http;
@@ -28,6 +29,13 @@ class PlaceService {
     return listDistricts.map((e) => District.fromJson(e)).toList();
   }
 
-  
+  Future createPlace(int districtId, Place place) async {
+    var response = await http.post(
+      Uri.parse('$basePath/districts/$districtId/places'),
+      body: jsonEncode(place),
+      headers: {"Content-Type": "application/json"}
+    );
 
+    return Place.fromJson(jsonDecode(response.body));
+  }
 }
