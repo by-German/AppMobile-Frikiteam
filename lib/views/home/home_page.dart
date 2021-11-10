@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:frikiteam/services/events/organizer_events_service.dart';
+import 'package:frikiteam/services/users/user_auth_service.dart';
 import 'package:frikiteam/views/events/viewevent_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -117,8 +119,12 @@ class _HomePageState extends State<HomePage> {
               ),
               FlatButton(
                 onPressed: () async {
-                  /* Testing endpoints */     
-    
+                  /* TODO: Testing endpoints */     
+                  await UserAuthService().auth("german@gmail.com", "german");
+                  var result = await OrganizerEventsService().getAllEventsByOrganizerId(5);
+                  print(result[0].name);
+
+
                 },
                 child: Text("Agregar",
                     style: TextStyle(
