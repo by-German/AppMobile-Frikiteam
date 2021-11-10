@@ -15,8 +15,8 @@ class OrganizerEventsService {
         };
     var response = await http.post(
       Uri.parse('$basePath/organizers/$organizerId/events'),
-      body: jsonEncode(event),
-      headers: headers
+        body: jsonEncode(event),
+        headers: headers
       );
     
     return Event.fromJson(jsonDecode(response.body));
@@ -27,7 +27,7 @@ class OrganizerEventsService {
     var response = await http.get(
       Uri.parse('$basePath/organizers/$organizerId/events'),
       headers: headers
-      );
+    );
     
     PageableResponse pageableResponse = PageableResponse.fromJson(json.decode(response.body));
     List<Event> events = pageableResponse.content.map((e) => Event.fromJson(e)).toList();
