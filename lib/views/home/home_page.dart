@@ -2,10 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
-import 'package:frikiteam/models/events/event_information.dart';
-import 'package:frikiteam/services/events/event_information_service.dart';
-import 'package:frikiteam/services/events/organizer_events_service.dart';
-import 'package:frikiteam/services/users/user_auth_service.dart';
 import 'package:frikiteam/views/events/viewevent_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -122,22 +118,6 @@ class _HomePageState extends State<HomePage> {
               FlatButton(
                 onPressed: () async {
                   /* TODO: Testing endpoints */     
-                  // await UserAuthService().auth("german@gmail.com", "german");
-                  // var result = await OrganizerEventsService().getAllEventsByOrganizerId(5);
-                  // print(result[0].name);
-
-                  List<EventInformation> information = [];
-                  information.add(EventInformation(id: 0, title: "info 1", description: "desc1", image: "image1"));
-                  information.add(EventInformation(id: 0, title: "info 2", description: "desc2", image: "image3"));
-
-                  await EventInformationService().postEventInformation(5, information);
-
-                  var result = await EventInformationService().getAllEventInformation(5);
-
-                  for (var item in result) {
-                    print(item.title);
-                    print("");
-                  }
 
 
                 },
