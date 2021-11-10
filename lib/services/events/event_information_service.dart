@@ -1,33 +1,26 @@
 import 'dart:convert';
 
-EventInformation eventInformationFromJson(String str) => EventInformation.fromJson(json.decode(str));
+import 'package:frikiteam/models/events/event_information.dart';
+import 'package:frikiteam/services/common/http.common.dart';
+import 'package:http/http.dart' as http;
 
-String eventInformationToJson(EventInformation data) => json.encode(data.toJson());
+class EventInformationService {
+  Future<List<EventInformation>> getAllEventInformation(int eventId) async {
+    var response = await http.get(Uri.parse('$basePath/events/$eventId/information'));
+    var information = jsonDecode(response.body) as List;
 
-class EventInformation {
-    EventInformation({
-      required this.id,
-      required this.title,
-      required this.description,
-      required this.image,
-    });
+    return information.map((e) => EventInformation.fromJson(e)).toList();
+  }
 
-    int id;
-    String title;
-    String description;
-    String image;
+  Future<void> postEventInformation(int eventId, List<EventInformation> items) async {
+    for (var item in items) {
+      await http.post(
+          Uri.parse('$basePath/events/$eventId/information'),
+          body: jsonEncode(item),
+          headers: {'Content-type': 'application/json'}
+        );
+    }
+  }
 
-    factory EventInformation.fromJson(Map<String, dynamic> json) => EventInformation(
-        id: json["id"],
-        title: json["title"],
-        description: json["description"],
-        image: json["image"],
-    );
 
-    Map<String, dynamic> toJson() => {
-        "id": id,
-        "title": title,
-        "description": description,
-        "image": image,
-    };
 }
