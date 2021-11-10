@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:frikiteam/models/users/user_auth.dart';
 import 'package:frikiteam/services/users/user_auth_service.dart';
 import 'package:frikiteam/views/events/viewevent_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -121,6 +125,15 @@ class _HomePageState extends State<HomePage> {
                   /* Testing endpoints */     
                   var result = await UserAuthService().auth("german@gmail.com", "german");
                   print(result);
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                  var userAuth = prefs.getString("userAuth");
+                  UserAuth user = UserAuth.fromJson(jsonDecode(userAuth!));
+      
+                  print(user.id);
+                  print(user.username);
+                  print(user.role);
+                  print(user.token);
 
                 },
                 child: Text("Agregar",
