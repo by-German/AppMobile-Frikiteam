@@ -2,10 +2,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:frikiteam/services/events/organizer_events_service.dart';
+import 'package:frikiteam/storage/storage.dart';
 import 'package:frikiteam/views/create/general_information.dart';
 
-class MyEvents extends StatelessWidget {
+class MyEvents extends StatefulWidget {
   const MyEvents({Key? key}) : super(key: key);
+
+  @override
+  _MyEventsState createState() => _MyEventsState();
+}
+
+class _MyEventsState extends State<MyEvents> {
+  Storage storage = Storage();
+  OrganizerEventsService service = OrganizerEventsService();
+
+  @override
+  void initState() {
+    getAllEventsCreated();
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -160,5 +177,12 @@ class MyEvents extends StatelessWidget {
          ],
         ),
     );
+  }
+
+  void getAllEventsCreated() async {
+    final auth = await storage.getUserAuth();
+    var list = await service.getAllEventsByOrganizerId(auth.id);
+    print(list[0].name);
+
   }
 }
