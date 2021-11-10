@@ -4,8 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:frikiteam/models/events/event.dart';
 import 'package:frikiteam/models/users/user_auth.dart';
+import 'package:frikiteam/services/events/organizer_events_service.dart';
 import 'package:frikiteam/services/users/user_auth_service.dart';
+import 'package:frikiteam/storage/storage.dart';
 import 'package:frikiteam/views/events/viewevent_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -123,17 +126,10 @@ class _HomePageState extends State<HomePage> {
               FlatButton(
                 onPressed: () async {
                   /* Testing endpoints */     
-                  var result = await UserAuthService().auth("german@gmail.com", "german");
-                  print(result);
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await UserAuthService().auth("german@gmail.com", "german");
+                  var result = await OrganizerEventsService().getAllEventsByOrganizerId(5);
+                  print(result[0].name);
 
-                  var userAuth = prefs.getString("userAuth");
-                  UserAuth user = UserAuth.fromJson(jsonDecode(userAuth!));
-      
-                  print(user.id);
-                  print(user.username);
-                  print(user.role);
-                  print(user.token);
 
                 },
                 child: Text("Agregar",
