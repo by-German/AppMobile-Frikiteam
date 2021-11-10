@@ -1,12 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frikiteam/services/users/user_auth_service.dart';
 import 'package:frikiteam/views/home/home_page.dart';
 import 'package:frikiteam/views/users/register_page.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  UserAuthService authService = UserAuthService();
+  
+  String email = '';
+  String password = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         width: MediaQuery.of(context).size.width,
         child: Column(
@@ -55,12 +68,12 @@ class LoginPage extends StatelessWidget {
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white),
                                 ),
-                                hintText: "name@email.com",
                                 suffixIcon: Icon(Icons.email),
                                 fillColor: Colors.white,
                                 filled: true
                               ),
                               keyboardType: TextInputType.emailAddress,
+                              onChanged: (value) => setState(() => email = value),
                             ),
                             SizedBox(height: 10),
                             TextField(
@@ -76,12 +89,14 @@ class LoginPage extends StatelessWidget {
                                   filled: true,
                                   suffixIcon: Icon(Icons.password_sharp),
                             ),
-                              keyboardType: TextInputType.emailAddress,
+                              keyboardType: TextInputType.visiblePassword,
+                              obscureText: true,
+                              onChanged: (value) => setState(() => password = value),
                             ),
                             SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+                                loginAction(email, password);
                               },
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
@@ -114,4 +129,12 @@ class LoginPage extends StatelessWidget {
     );
   }
 
+  void loginAction(String email, String password) async {
+    var success = await authService.auth(email, password);
+    if (success) {
+      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+    } else {
+      print("credenciales incorrectos");
+    }
+  }
 }
