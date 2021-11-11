@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:frikiteam/models/events/event.dart';
+import 'package:frikiteam/models/events/event_information.dart';
+import 'package:frikiteam/models/events/itinerary.dart';
+import 'package:frikiteam/services/events/event_information_service.dart';
+import 'package:frikiteam/services/events/event_itineraries.dart';
+import 'package:frikiteam/services/events/events_service.dart';
 
 class ViewEventPage extends StatefulWidget {
   @override
@@ -9,8 +15,22 @@ class ViewEventPage extends StatefulWidget {
 }
 
 class _ViewEventPageState extends State<ViewEventPage> {
-  String textDisplay = "title";
+  EventInformationService informationService = EventInformationService();
+  EventItinerariesService itinerariesService = EventItinerariesService();
+  EventsSevice eventsService = EventsSevice();
+
+  Event? event;
+  List<Itinerary> itineraries = [];
+  List<EventInformation> information = [];
+
+  String imageDefault = "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg";
   bool pressCard = false;
+
+  @override
+  void initState() {
+    getEvent();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +40,18 @@ class _ViewEventPageState extends State<ViewEventPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            imageEvent(context: context, index: 0, height: 230),
+            imageEvent(context: context, height: 230),
             title(text: "Itineraries"),
             Container(
-              height: 150,
+              height: 170,
               margin: EdgeInsets.only(bottom: 25),
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 20),
-                itemCount: 10,
+                itemCount: 3,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text("itinerari" + index.toString()),
+                    title: Text(itineraries[index].name),
+                    leading: Icon(Icons.short_text), // adjust_rounded circle_rounded
                   );
                 },
               ),
@@ -42,7 +63,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
                     height: 400,
                     enlargeCenterPage: true,
                   ),
-                  itemCount: 3,
+                  itemCount: information.length,
                   itemBuilder: (context, index, realIndex) =>
                       detailedCard(context, index, 400)),
             ),
@@ -60,15 +81,15 @@ class _ViewEventPageState extends State<ViewEventPage> {
     );
   }
 
-  Widget cardText() {
-    if (!pressCard)
+  Widget cardText(int index) {
+    if (!pressCard) // title
       return Container(
         padding: EdgeInsets.all(10),
         width: 250,
         decoration:
             BoxDecoration(border: Border.all(width: 1, color: Colors.white)),
         child: Text(
-          textDisplay,
+          information[index].title,
           style: TextStyle(
             fontSize: 30,
             color: Colors.white,
@@ -77,8 +98,8 @@ class _ViewEventPageState extends State<ViewEventPage> {
         ),
       );
 
-    return Text(
-      textDisplay,
+    return Text( // description
+      information[index].description,
       style: TextStyle(
         color: Colors.white,
         fontSize: 17,
@@ -91,14 +112,8 @@ class _ViewEventPageState extends State<ViewEventPage> {
   Widget detailedCard(BuildContext context, int index, double height) {
     return GestureDetector(
       onTap: () {
-        pressCard = !pressCard;
         setState(() {
-          if (pressCard) {
-            textDisplay =
-                "En Japón se publicó esta semana la lista de los mangas más vendidos del año, y el gran superventas de la Tierra del Sol naciente fue ni más ni menos que One Piece, la interminable aventura de Monkey D. Luffy y sus nakamas, que ya está a punto de llegar a su tomo 100. El triunfo del manga de Eiichiro Oda no es una sorpresa, en los últimos 11 años One Piece es el manga mejor vendido en Japón, donde Luffy es un héroe local incluso por encima de Goku en cuanto a fama y amor de sus fans. Lo único malo para Oda es que, a pesar de ser el manga mejor vendido, One Piece vendió 3 millones menos de ejemplares con relación al año pasado. El segundo lugar fue para My Hero Academia, que subió dos escalones, y las grandes decepciones fueron Kingdom y Tokyo Ghoul:re, que bajaron 4 y 5 lugares respectivamente.";
-          } else {
-            textDisplay = "Literatura Manga y mas";
-          }
+          pressCard = !pressCard;
         });
       },
       child: Card(
@@ -109,67 +124,85 @@ class _ViewEventPageState extends State<ViewEventPage> {
               Container(
                 height: height,
                 width: MediaQuery.of(context).size.width,
-                child: Image.asset(
-                  "assets/images/home.png",
+                child: Image.network(
+                  information[index].image,
                   fit: BoxFit.cover,
                   color: Colors.black54,
                   colorBlendMode: BlendMode.darken,
                 ),
               ),
               Center(
-                  child: Padding(
+                child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: SingleChildScrollView(child: cardText()),
+                child: SingleChildScrollView(child: cardText(index)),
               ))
             ],
           )),
     );
   }
-}
 
-Widget imageEvent({required BuildContext context, int? index, double? height}) {
-  return Stack(
-    children: [
-      Container(
-        height: height,
-        width: MediaQuery.of(context).size.width,
-        child: Image.asset("assets/images/friki.png", fit: BoxFit.cover),
-      ),
-      Container(
-        height: height,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-            border: Border.all(width: 0.0),
-            gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                stops: [0.03, 1],
-                colors: [Color.fromRGBO(24, 22, 26, 1), Colors.transparent])),
-      ),
-      Positioned(
-        bottom: 25,
-        left: 25,
-        right: 20,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 50),
-          child: Text(
-            "Friki Festival 10 ma. Edicion",
-            style: TextStyle(
-                fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold),
+  Widget imageEvent({required BuildContext context, double? height}) {
+    return Stack(
+      children: [
+        Container(
+          height: height,
+          width: MediaQuery.of(context).size.width,
+          child: Image.network(event?.logo ?? imageDefault, fit: BoxFit.cover),
+        ),
+        Container(
+          height: height,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              border: Border.all(width: 0.0),
+              gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  stops: [0.03, 1],
+                  colors: [Color.fromRGBO(24, 22, 26, 1), Colors.transparent])),
+        ),
+        Positioned(
+          bottom: 25,
+          left: 25,
+          right: 20,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 50),
+            child: Text(
+              event?.name ?? "Name",
+              style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
+            ),
           ),
         ),
-      ),
-      Positioned(
-          bottom: 18,
-          right: 10,
-          child: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.favorite_border,
-                color: Colors.white,
-              )))
-    ],
-  );
+        Positioned(
+            bottom: 18,
+            right: 10,
+            child: IconButton(
+                onPressed: () {
+                  print("siguiendo");
+                },
+                icon: Icon(
+                  Icons.favorite_border,
+                  color: Colors.white,
+                )))
+      ],
+    );
+  }
+
+  void getEvent() async {
+    int eventId = 65;
+    final responseEvent = await eventsService.getEventById(eventId);
+    final responseInformation =
+        await informationService.getAllEventInformation(eventId);
+    final responseItineraries =
+        await itinerariesService.getAllEventItineraries(eventId);
+    setState(() {
+      event = responseEvent;
+      information = responseInformation;
+      itineraries = responseItineraries;
+    });
+  }
 }
 
 Widget title({required text}) => Padding(
@@ -180,7 +213,7 @@ Widget title({required text}) => Padding(
       ),
     );
 
-Widget circleAvatar({ required String name}) {
+Widget circleAvatar({required String name}) {
   return Column(
     children: [
       ClipRRect(
