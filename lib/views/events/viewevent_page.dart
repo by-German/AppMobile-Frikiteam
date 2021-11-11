@@ -45,7 +45,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
             Container(
               height: 170,
               margin: EdgeInsets.only(bottom: 25),
-              child: ListView.builder(
+              child: itineraries.isNotEmpty ? ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 itemCount: 3,
                 itemBuilder: (context, index) {
@@ -54,7 +54,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
                     leading: Icon(Icons.short_text), // adjust_rounded circle_rounded
                   );
                 },
-              ),
+              ): loadingData(), 
             ),
             title(text: "Detailed Information"),
             Center(
@@ -64,8 +64,8 @@ class _ViewEventPageState extends State<ViewEventPage> {
                     enlargeCenterPage: true,
                   ),
                   itemCount: information.length,
-                  itemBuilder: (context, index, realIndex) =>
-                      detailedCard(context, index, 400)),
+                  itemBuilder: (context, index, realIndex) => information.isNotEmpty ?
+                      detailedCard(context, index, 400) : loadingData()),
             ),
             title(text: "Organizer"),
             circleAvatar(name: "German Mamani"),
@@ -167,7 +167,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
           child: Padding(
             padding: const EdgeInsets.only(right: 50),
             child: Text(
-              event?.name ?? "Name",
+              event?.name ?? "Event Name",
               style: TextStyle(
                   fontSize: 30,
                   color: Colors.white,
@@ -246,3 +246,9 @@ Widget circleAvatar({required String name}) {
     ],
   );
 }
+
+Widget loadingData() => Center(
+  child: CircularProgressIndicator(
+
+  ),
+);

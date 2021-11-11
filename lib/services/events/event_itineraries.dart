@@ -7,7 +7,17 @@ import 'package:http/http.dart' as http;
 class EventItinerariesService {
   Future<List<Itinerary>> getAllEventItineraries(int eventId) async {
     var response = await http.get(Uri.parse('$basePath/events/$eventId/itineraries'));
-    var itineraries = jsonDecode(response.body) as List;
+    
+    var source = Utf8Decoder().convert(response.bodyBytes);
+    
+//     http.Response response = await _api.getData();
+//  String source = Utf8Decoder().convert(response.bodyBytes);
+
+//  // Convert to your class instance...
+//  MyClass instance = json.decode(source);
+
+
+    var itineraries = jsonDecode(source) as List;
 
     return itineraries.map((e) => Itinerary.fromJson(e)).toList();
   }
