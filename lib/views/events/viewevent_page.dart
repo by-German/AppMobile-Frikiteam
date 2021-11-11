@@ -1,186 +1,215 @@
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
-import 'detailevent_page.dart';
+class ViewEventPage extends StatefulWidget {
+  @override
+  _ViewEventPageState createState() => _ViewEventPageState();
+}
 
-class ViewEventPage extends StatelessWidget {
+class _ViewEventPageState extends State<ViewEventPage> {
+  String textDisplay = "title";
+  bool pressCard = false;
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: navBar(context),
       bottomNavigationBar: bottomNav(context, 1),
-      backgroundColor: Colors.black,
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
-        child: Center(
-          child: Column(
+        child: Column(
+          children: [
+            imageEvent(context: context, index: 0, height: 230),
+            title(text: "Itineraries"),
+            Container(
+              height: 150,
+              margin: EdgeInsets.only(bottom: 25),
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text("itinerari" + index.toString()),
+                  );
+                },
+              ),
+            ),
+            title(text: "Detailed Information"),
+            Center(
+              child: CarouselSlider.builder(
+                  options: CarouselOptions(
+                    height: 400,
+                    enlargeCenterPage: true,
+                  ),
+                  itemCount: 3,
+                  itemBuilder: (context, index, realIndex) =>
+                      detailedCard(context, index, 400)),
+            ),
+            title(text: "Organizer"),
+            circleAvatar(name: "German Mamani"),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.shopping_cart),
+        backgroundColor: Colors.deepPurple,
+        splashColor: Colors.white,
+      ),
+    );
+  }
 
-            children: <Widget>[
-              _crearCard1(),
-              _crearCard2(context),
-              _crearCard3(),
-              _crearCard4(),
-              _crearCard5()
+  Widget cardText() {
+    if (!pressCard)
+      return Container(
+        padding: EdgeInsets.all(10),
+        width: 250,
+        decoration:
+            BoxDecoration(border: Border.all(width: 1, color: Colors.white)),
+        child: Text(
+          textDisplay,
+          style: TextStyle(
+            fontSize: 30,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+
+    return Text(
+      textDisplay,
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 17,
+        fontStyle: FontStyle.italic,
+      ),
+      textAlign: TextAlign.justify,
+    );
+  }
+
+  Widget detailedCard(BuildContext context, int index, double height) {
+    return GestureDetector(
+      onTap: () {
+        pressCard = !pressCard;
+        setState(() {
+          if (pressCard) {
+            textDisplay =
+                "En Japón se publicó esta semana la lista de los mangas más vendidos del año, y el gran superventas de la Tierra del Sol naciente fue ni más ni menos que One Piece, la interminable aventura de Monkey D. Luffy y sus nakamas, que ya está a punto de llegar a su tomo 100. El triunfo del manga de Eiichiro Oda no es una sorpresa, en los últimos 11 años One Piece es el manga mejor vendido en Japón, donde Luffy es un héroe local incluso por encima de Goku en cuanto a fama y amor de sus fans. Lo único malo para Oda es que, a pesar de ser el manga mejor vendido, One Piece vendió 3 millones menos de ejemplares con relación al año pasado. El segundo lugar fue para My Hero Academia, que subió dos escalones, y las grandes decepciones fueron Kingdom y Tokyo Ghoul:re, que bajaron 4 y 5 lugares respectivamente.";
+          } else {
+            textDisplay = "Literatura Manga y mas";
+          }
+        });
+      },
+      child: Card(
+          elevation: 3,
+          margin: EdgeInsets.only(bottom: 25),
+          child: Stack(
+            children: [
+              Container(
+                height: height,
+                width: MediaQuery.of(context).size.width,
+                child: Image.asset(
+                  "assets/images/home.png",
+                  fit: BoxFit.cover,
+                  color: Colors.black54,
+                  colorBlendMode: BlendMode.darken,
+                ),
+              ),
+              Center(
+                  child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SingleChildScrollView(child: cardText()),
+              ))
             ],
+          )),
+    );
+  }
+}
+
+Widget imageEvent({required BuildContext context, int? index, double? height}) {
+  return Stack(
+    children: [
+      Container(
+        height: height,
+        width: MediaQuery.of(context).size.width,
+        child: Image.asset("assets/images/friki.png", fit: BoxFit.cover),
+      ),
+      Container(
+        height: height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            border: Border.all(width: 0.0),
+            gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                stops: [0.03, 1],
+                colors: [Color.fromRGBO(24, 22, 26, 1), Colors.transparent])),
+      ),
+      Positioned(
+        bottom: 25,
+        left: 25,
+        right: 20,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 50),
+          child: Text(
+            "Friki Festival 10 ma. Edicion",
+            style: TextStyle(
+                fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       ),
-    );
-  }
+      Positioned(
+          bottom: 18,
+          right: 10,
+          child: IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.favorite_border,
+                color: Colors.white,
+              )))
+    ],
+  );
+}
 
-  Widget _crearCard1(){
-    return Card(
-      elevation: 5,
-      color: Color.fromRGBO(24, 22, 26, 1),
-
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: <Widget> [
-            Image.asset("assets/images/friki.png", height: 150, width: 400,),
-            SizedBox(height: 10,),
-            Text('Friki Festival', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),),
-            SizedBox(height: 10,),
-            Text('by: Festival', style: TextStyle(color: Colors.white),),
-
-          ],
-        ),
+Widget title({required text}) => Padding(
+      padding: EdgeInsets.symmetric(vertical: 25),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
       ),
     );
-  }
 
-  Widget _crearCard2(BuildContext context){
-    return Card(
-      elevation: 5,
-      color: Color.fromRGBO(255, 255, 255, 1),
-
-      child: Container(
-        padding: EdgeInsets.all(50),
-        child: Column(
-          children: <Widget> [
-            Text('Horario', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-            SizedBox(height: 10,),
-            Text('Jueves de 8:00 a 10:00',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            SizedBox(height: 15,),
-            Text('Publico Recomendado', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-            SizedBox(height: 10,),
-            Text('Para Todos',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            SizedBox(height: 15,),
-            Text('Temario / Agenda', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-            SizedBox(height: 8,),
-            Text('Concurso de Cosplay',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            Text('Shows con las mas reconocidas bandas K-Pop',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            Text('Taller Arte, Magia y Manga',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            SizedBox(height: 15,),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => DetailEventPage()));
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
-                fixedSize: MaterialStateProperty.all<Size>(Size.fromWidth(200)),
-              ),
-              child: Text("COMPRAR"),
-            )
-
-          ],
+Widget circleAvatar({ required String name}) {
+  return Column(
+    children: [
+      ClipRRect(
+        borderRadius: BorderRadius.circular(100),
+        child: Container(
+          width: 120,
+          height: 120,
+          child: Image.network(
+            "https://firebasestorage.googleapis.com/v0/b/prueba-43bf8.appspot.com/o/images%2Fpablo.jpg?alt=media&token=c0a9c87e-6954-4355-9cd4-84b9d8294392",
+            fit: BoxFit.cover,
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _crearCard3() {
-    return Card(
-      elevation: 5,
-      color: Color.fromRGBO(24, 22, 26, 1),
-
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: <Widget>[
-            Text('Eventos', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: Colors.white),),
-            SizedBox(height: 15,),
-            Card(
-              elevation: 5,
-              color: Color.fromRGBO(255, 255, 255, 1),
-
-              child: Container(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  children:<Widget> [
-                    Image.asset("assets/images/otaku.png", height: 150, width: 400,),
-                    SizedBox(height: 10,),
-                    Text('Friki Festival 10ma edición', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-                    SizedBox(height: 20,),
-                    Text('El mundo está cambiando. Todos los paises',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('lo hacen, de hecho. Sí que es cierto que',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('algunos más aceleradamente que otros,',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('pero la realidad no puede mantenerse',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('estática. En esta nueva dimensión se',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('acumulan los eventos que quieren regular',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('los sentidos de los amantes de la cultura',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('oriental more...',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-
-                  ],
-                ),
-              ),
-            )
-
-          ],
+      Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Text(
+          name,
+          style: TextStyle(fontSize: 20),
         ),
       ),
-    );
-  }
-
-  Widget _crearCard4(){
-    return Card(
-      elevation: 5,
-      color: Color.fromRGBO(255, 255, 255, 1),
-
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: <Widget> [
-            SizedBox(height: 15,),
-            Text('Ubicaciones de los Eventos', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-            SizedBox(height: 15,),
-            Text('Esq.Av. Tomás Valle with, Auxiliar Panamericana Nte.,',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            Text('Independencia 15311 - piso 1 - explanada Metro',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            SizedBox(height: 15,),
-            Image.asset("assets/images/Map.png", height: 150, width: 400,),
-            SizedBox(height: 15,),
-            Text('Ver Detallado',  style: TextStyle(fontWeight: FontWeight.bold,color: Colors.amber, fontSize: 15),),
-
-          ],
-        ),
+      MaterialButton(
+        onPressed: () {},
+        child: Text("FOLLOW"),
+        color: Colors.deepPurple,
+        textColor: Colors.white,
       ),
-    );
-  }
-
-  Widget _crearCard5(){
-    return Card(
-      elevation: 5,
-      color: Color.fromRGBO(24, 22, 26, 1),
-
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: <Widget> [
-            SizedBox(height: 15,),
-            Text('Organizador',  style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: 20),),
-            SizedBox(height: 15,),
-            Image.asset("assets/images/friki.png", height: 150, width: 400,),
-            SizedBox(height: 15,),
-            Text('Friki festival es una organización que se encarga de',  style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: 11),),
-            Text('hacer eventos referentes al mundo friki, actualmente',  style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: 11),),
-          ],
-        ),
-      ),
-    );
-  }
-
-
+      SizedBox(
+        height: 25,
+      )
+    ],
+  );
 }
