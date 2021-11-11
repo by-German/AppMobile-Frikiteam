@@ -93,45 +93,50 @@ class _MyEventsState extends State<MyEvents> {
   }
 
   Widget eventCard(int index) => Padding(
-    padding: const EdgeInsets.only(left: 15, right: 10),
-    child: Container(
-          width: 180,
-          height: 360,
-          color: Color.fromRGBO(246, 246, 255, 1),
-          alignment: Alignment.topCenter,
-          child: Column(
-            children: [
-              Container(
-                margin: new EdgeInsets.symmetric(vertical: 15.0),
-                width: 130,
-                height: 130,
-                child: Image.network(events[index].logo) ?? Image.asset("assets/images/download.png"),
-              ),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  child: Text(events[index].name,
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold))),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 8),
-                  child: (Text(
-                      events[index].information,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16)))),
-              MaterialButton(
-                onPressed: () {},
-                child: Text("Eliminar",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
-                color: Colors.red,
-                minWidth: 120,
-              ),
-            ],
+        padding: const EdgeInsets.only(left: 15, right: 10),
+        child: Stack(children: [
+          Container(
+            width: 200,
+            height: 360,
+            color: Color.fromRGBO(246, 246, 255, 1),
+            alignment: Alignment.topCenter,
+            child: Column(
+              children: [
+                Container(
+                  margin: new EdgeInsets.symmetric(vertical: 15.0),
+                  width: 130,
+                  height: 130,
+                  child: Image.network(events[index].logo),
+                ),
+                Padding(
+                    padding: EdgeInsets.only(left: 15, right: 15),
+                    child: Text(events[index].name,
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold))),
+                Padding(
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 8),
+                    child: (Text(events[index].information,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16)))),
+              ],
+            ),
           ),
-        ),
-  );
+          Positioned(
+            bottom: 50,
+            left: 40,
+            child: MaterialButton(
+              onPressed: () {},
+              child: Text("Eliminar",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+              color: Colors.red,
+              minWidth: 120,
+            ),
+          ),
+        ]),
+      );
 
   void getAllEventsCreated() async {
     final auth = await storage.getUserAuth();
