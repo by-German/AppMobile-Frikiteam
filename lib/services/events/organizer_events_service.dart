@@ -36,4 +36,13 @@ class OrganizerEventsService {
     List<Event> events = pageableResponse.content.map((e) => Event.fromJson(e)).toList();
     return events;
   }
+
+  Future<void> deleteEvent(int organizerId, int eventId) async {
+    var token = await storage.getToken();
+    Map<String, String> headers = {'Authorization': 'Bearer $token'};
+    await http.delete(
+      Uri.parse('$basePath/organizers/$organizerId/events/$eventId'),
+      headers: headers
+    );
+  }
 }

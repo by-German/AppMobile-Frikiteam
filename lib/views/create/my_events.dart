@@ -125,7 +125,7 @@ class _MyEventsState extends State<MyEvents> {
             bottom: 50,
             left: 40,
             child: MaterialButton(
-              onPressed: () {},
+              onPressed: () => deleteEvent(events[index].id),
               child: Text("Eliminar",
                   style: TextStyle(
                       color: Colors.white,
@@ -145,4 +145,12 @@ class _MyEventsState extends State<MyEvents> {
       events = list;
     });
   }
+
+  void deleteEvent(int eventId) async {
+    final auth = await storage.getUserAuth();
+    print(eventId);
+    await service.deleteEvent(auth.id, eventId);
+    getAllEventsCreated();
+  }
+
 }
