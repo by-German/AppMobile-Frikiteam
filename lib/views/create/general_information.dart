@@ -16,6 +16,8 @@ import 'package:frikiteam/storage/storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
+import 'detailed_information.dart';
+
 class GeneralInformation extends StatefulWidget {
   const GeneralInformation({Key? key}) : super(key: key);
 
@@ -45,9 +47,9 @@ class _GeneralInformationState extends State<GeneralInformation> {
   String dateEnd = '';
 
   final StorageService storageService = StorageService();
-  
-
   String imagePath = "";
+
+  bool loading = false;
 
   openGallery() async {
     final ImagePicker _picker = ImagePicker();
@@ -300,18 +302,23 @@ class _GeneralInformationState extends State<GeneralInformation> {
                             ),
 
                             SizedBox(height: 20),
+                            !loading ?
                             ElevatedButton(
                               onPressed: () {
-                                createEvent();
-                                // Navigator.of(context).push(MaterialPageRoute(
-                                //     builder: (BuildContext context) => DetailedInformation()));
+                                // TODO: como pasar eventId = 165
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) => DetailedInformation()));
+                                // setState(() {
+                                //   loading = true;
+                                // });
+                                // createEvent();
                               },
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
                                 fixedSize: MaterialStateProperty.all<Size>(Size.fromWidth(500)),
                               ),
                               child: Text("Next"),
-                            ),
+                            ): CircularProgressIndicator(),
                             SizedBox(height: 20),
                           ],
                         ),
@@ -354,12 +361,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
 
     Place placeRequest = Place(id: 0, name: place);
     var placeResponse = await placeService.createPlace(districtId!, placeRequest);
-    print("place id:");
-    print(placeResponse.id);
 
     if (resultUrl.isEmpty) resultUrl = "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg";
-    print("url generated");
-    print(resultUrl);
 
     event = Event(
       id: 0, logo: resultUrl,
@@ -375,9 +378,11 @@ class _GeneralInformationState extends State<GeneralInformation> {
       organizerId: user.id, 
       placeId: placeResponse.id);
 
-    var response = await organizerEventsService.createEvent(user.id, event!);
-    print("result:");
-    print(response.name);
-
+    await organizerEventsService.createEvent(user.id, event!);
+    setState(() {
+      loading = false;
+    });
+    Navigator.of(context).push(MaterialPageRoute(
+         builder: (BuildContext context) => DetailedInformation()));
   }
 }
