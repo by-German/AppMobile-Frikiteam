@@ -6,7 +6,10 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 
+
+
 class DetailedInformation extends StatefulWidget{
+
   DetailedInformation({Key? key}) : super(key: key);
 
   _DetailedInformationState createState() => _DetailedInformationState();
@@ -14,7 +17,8 @@ class DetailedInformation extends StatefulWidget{
 
 class _DetailedInformationState extends State<DetailedInformation>{
   bool _loading = false;
-
+  List<TextEditingController> _controllers = [];
+  List<TextField> _fields = [];
   String imagePath = "";
 
   openGallery() async {
@@ -37,6 +41,61 @@ class _DetailedInformationState extends State<DetailedInformation>{
     }
     return Image.file(File(imagePath), width: 250, height: 250, fit: BoxFit.cover,);
   }
+
+
+
+
+  @override
+  void dispose() {
+    for (final controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  Widget dynamicButton() {
+    return ListTile(
+      title: Icon(Icons.add, color: Colors.white,),
+      onTap: () {
+        final controller = TextEditingController();
+        final field = TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            border: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white)
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            fillColor: Colors.white,
+            filled: true,
+            labelText: "Itinerary ${_controllers.length + 1}",
+          ),
+        );
+        SizedBox(height: 10);
+
+        setState(() {
+          _controllers.add(controller);
+          _fields.add(field);
+        });
+      },
+    );
+  }
+
+  Widget _listView() {
+    return ListView.builder(
+      itemCount: _fields.length,
+      itemBuilder: (context, index) {
+        return Container(
+          margin: EdgeInsets.all(18),
+          child: _fields[index],
+        );
+      },
+    );
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,67 +133,21 @@ class _DetailedInformationState extends State<DetailedInformation>{
       child: Container(
         padding: EdgeInsets.all(20),
         child: Column(
+
             children: [
               Align(  alignment: Alignment.centerLeft,
 
                 child: Text('Intineraries', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,  color: Colors.white), ),
               ),
               SizedBox(height: 15,),
-              TextField(
-              decoration: InputDecoration(
-              labelText: "Itinerary 1",
-                  border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white)
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  fillColor: Colors.white,
-                  filled: true
-              ),
-              keyboardType: TextInputType.text,
-            ),
-            SizedBox(height: 10),
 
-              TextField(
-                decoration: InputDecoration(
-                    labelText: "Itinerary 2",
-                    border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white)
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    fillColor: Colors.white,
-                    filled: true
-                ),
-                keyboardType: TextInputType.text,
-              ),
-              SizedBox(height: 10),
-              TextField(
-                decoration: InputDecoration(
-                    labelText: "Itinerary 3",
-                    border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white)
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    fillColor: Colors.white,
-                    filled: true
-                ),
-                keyboardType: TextInputType.text,
-              ),
-              SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  onPressed: () {
-                  },
-                  icon: Icon(Icons.add, color: Colors.white,),
-                  iconSize: 30,
-                ),
-              ),
+              SizedBox(height: 400.0, child: _listView()),
+              Center(child: dynamicButton()),
+
+
+
+
+              SizedBox(height: 20),
               Align(  alignment: Alignment.centerLeft,
 
                 child: Text('Information Detailed', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,  color: Colors.white), ),
