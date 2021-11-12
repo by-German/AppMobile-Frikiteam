@@ -14,9 +14,6 @@ import 'package:frikiteam/services/places/place_service.dart';
 import 'package:frikiteam/storage/storage.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'detailed_information.dart';
-
-
 class GeneralInformation extends StatefulWidget {
   const GeneralInformation({Key? key}) : super(key: key);
 
