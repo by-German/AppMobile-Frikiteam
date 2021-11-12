@@ -31,8 +31,9 @@ class OrganizerEventsService {
       Uri.parse('$basePath/organizers/$organizerId/events'),
       headers: headers
     );
-    
-    PageableResponse pageableResponse = PageableResponse.fromJson(json.decode(response.body));
+    var source = Utf8Decoder().convert(response.bodyBytes);
+
+    PageableResponse pageableResponse = PageableResponse.fromJson(json.decode(source));
     List<Event> events = pageableResponse.content.map((e) => Event.fromJson(e)).toList();
     return events;
   }
