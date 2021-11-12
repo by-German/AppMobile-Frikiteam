@@ -21,6 +21,8 @@ class OrganizerEventsService {
         headers: headers
       );
     
+    print(response.body);
+    
     return Event.fromJson(jsonDecode(response.body));
   }
 

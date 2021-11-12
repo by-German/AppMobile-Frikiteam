@@ -4,10 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:frikiteam/models/events/event.dart';
 import 'package:frikiteam/models/places/city.dart';
 import 'package:frikiteam/models/places/country.dart';
 import 'package:frikiteam/models/places/disctrict.dart';
+import 'package:frikiteam/models/places/place.dart';
+import 'package:frikiteam/services/events/organizer_events_service.dart';
 import 'package:frikiteam/services/places/place_service.dart';
+import 'package:frikiteam/storage/storage.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'detailed_information.dart';
@@ -28,6 +32,16 @@ class _GeneralInformationState extends State<GeneralInformation> {
   List<City> cities = [];
   int? districtId;
   List<District> districts = [];
+
+  OrganizerEventsService organizerEventsService = OrganizerEventsService();
+  Event? event;
+  String title = '';
+  String description = '';
+  String place = '';
+  double? price;
+  int? quantity;
+  String dateStart = '';
+  String dateEnd = '';
 
   String imagePath = "";
 
@@ -77,8 +91,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
     } else {
       DateTime? start = dateRange?.start;
       DateTime? end = dateRange?.end;
-      String dateStart = '${start?.day}/${start?.month}/${start?.year}';
-      String dateEnd = '${end?.day}/${end?.month}/${end?.year}';
+      dateStart = '${start?.year}-${start?.month}-${start?.day}';
+      dateEnd = '${end?.year}-${end?.month}-${end?.day}';
       return '$dateStart - $dateEnd';
     }
   }
@@ -124,6 +138,9 @@ class _GeneralInformationState extends State<GeneralInformation> {
                                 filled: true
                               ),
                               keyboardType: TextInputType.text,
+                              onChanged: (value) {
+                                title = value;
+                              },
                             ),
                             SizedBox(height: 10),
                             TextField(
@@ -136,9 +153,10 @@ class _GeneralInformationState extends State<GeneralInformation> {
                                   borderSide: BorderSide(color: Colors.white),
                                 ),
                                 fillColor: Colors.white,
-                                filled: true
+                                filled: true,
                               ),
                               keyboardType: TextInputType.text,
+                              onChanged: (value) => description = value,
                             ),
                             SizedBox(height: 20),
                             Stack(
@@ -230,6 +248,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
                                 filled: true
                               ),
                               keyboardType: TextInputType.text,
+                              onChanged: (value) => place = value,
                             ),
                             
                             SizedBox(height: 20),
@@ -248,6 +267,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
                                 filled: true
                               ),
                               keyboardType: TextInputType.number,
+                              onChanged: (value) => price = double.parse(value),
                             ),
                             SizedBox(height: 10),
                             TextField(
@@ -263,6 +283,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
                                 filled: true
                               ),
                               keyboardType: TextInputType.number,
+                              onChanged: (value) => quantity = int.parse(value),
                             ),
                             SizedBox(height: 10,),
                             MaterialButton(
@@ -277,8 +298,9 @@ class _GeneralInformationState extends State<GeneralInformation> {
                             SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => DetailedInformation()));
+                                createEvent();
+                                // Navigator.of(context).push(MaterialPageRoute(
+                                //     builder: (BuildContext context) => DetailedInformation()));
                               },
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
@@ -318,5 +340,44 @@ class _GeneralInformationState extends State<GeneralInformation> {
     setState(() {
       districts = result;
     });
+  }
+
+  void createEvent() async {
+    print(title);
+    print(description);
+    print(place);
+    print(price);
+    print(quantity);
+    print(dateStart);
+    print(dateEnd);
+
+
+    if (districtId == null /*&& imagePath.isEmpty*/) return;
+
+    Storage storage = Storage();
+    final user = await storage.getUserAuth();
+
+    // Place placeRequest = Place(id: 0, name: place);
+    // var placeResponse = await placeService.createPlace(districtId!, placeRequest);
+
+    event = Event(
+      id: 0, logo: "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg",
+      information: description, 
+      name: title, 
+      price: price!, 
+      quantity: quantity!, 
+      sold: 0, 
+      verified: false, 
+      startDate: dateStart, 
+      endDate: dateEnd, 
+      eventTypeId: 0, 
+      organizerId: user.id, 
+      placeId: 55);
+
+    var response = await organizerEventsService.createEvent(user.id, event!);
+    print("result:");
+    print(response.name);
+
+
   }
 }
