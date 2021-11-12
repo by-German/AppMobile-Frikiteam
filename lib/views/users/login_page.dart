@@ -15,6 +15,8 @@ class _LoginPageState extends State<LoginPage> {
   
   String email = '';
   String password = '';
+  bool processing = false;
+  String message = '';
 
   @override
   Widget build(BuildContext context) {
@@ -94,8 +96,13 @@ class _LoginPageState extends State<LoginPage> {
                               onChanged: (value) => setState(() => password = value),
                             ),
                             SizedBox(height: 20),
+                            !processing ?
                             ElevatedButton(
                               onPressed: () {
+                                setState(() {
+                                  processing = true;
+                                  message = '';
+                                });
                                 loginAction(email, password);
                               },
                               style: ButtonStyle(
@@ -103,7 +110,8 @@ class _LoginPageState extends State<LoginPage> {
                                 fixedSize: MaterialStateProperty.all<Size>(Size.fromWidth(500)),
                               ),
                               child: Text("Login"),
-                            ),
+                            ) : CircularProgressIndicator(),
+                            SizedBox(height: 10,),
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => RegisterPage()));
@@ -114,7 +122,12 @@ class _LoginPageState extends State<LoginPage> {
                                 foregroundColor: MaterialStateProperty.all(Colors.black),
                               ),
                               child: Text("Register"),  
-                            )
+                            ),
+                            SizedBox(height: 20,),
+                            Text(message, style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 15
+                            ),)
                           ],
                         ),
                       )
@@ -134,7 +147,10 @@ class _LoginPageState extends State<LoginPage> {
     if (success) {
       Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => HomePage()));
     } else {
-      print("credenciales incorrectos");
+      setState(() {
+        message = "credenciales incorrectos";
+        processing = success;
+      });
     }
   }
 }
