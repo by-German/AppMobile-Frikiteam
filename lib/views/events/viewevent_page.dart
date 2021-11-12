@@ -12,11 +12,18 @@ import 'package:frikiteam/services/events/events_service.dart';
 import 'package:frikiteam/services/users/organizer_service.dart';
 
 class ViewEventPage extends StatefulWidget {
+  final int eventId;
+
+  ViewEventPage({required this.eventId});
+
   @override
-  _ViewEventPageState createState() => _ViewEventPageState();
+  _ViewEventPageState createState() => _ViewEventPageState(eventId: eventId);
 }
 
 class _ViewEventPageState extends State<ViewEventPage> {
+  final int eventId;
+  _ViewEventPageState({required this.eventId});
+
   EventInformationService informationService = EventInformationService();
   EventItinerariesService itinerariesService = EventItinerariesService();
   EventsSevice eventsService = EventsSevice();
@@ -28,7 +35,8 @@ class _ViewEventPageState extends State<ViewEventPage> {
   List<Itinerary> itineraries = [];
   List<EventInformation> information = [];
 
-  String imageDefault = "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg";
+  String imageDefault =
+      "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg";
   bool pressCard = false;
 
   @override
@@ -50,16 +58,19 @@ class _ViewEventPageState extends State<ViewEventPage> {
             Container(
               height: 170,
               margin: EdgeInsets.only(bottom: 25),
-              child: itineraries.isNotEmpty ? ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(itineraries[index].name),
-                    leading: Icon(Icons.short_text), // adjust_rounded circle_rounded
-                  );
-                },
-              ): loadingData(), 
+              child: itineraries.isNotEmpty
+                  ? ListView.builder(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      itemCount: 3,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(itineraries[index].name),
+                          leading: Icon(Icons
+                              .short_text), // adjust_rounded circle_rounded
+                        );
+                      },
+                    )
+                  : loadingData(),
             ),
             title(text: "Detailed Information"),
             Center(
@@ -69,11 +80,15 @@ class _ViewEventPageState extends State<ViewEventPage> {
                     enlargeCenterPage: true,
                   ),
                   itemCount: information.length,
-                  itemBuilder: (context, index, realIndex) => information.isNotEmpty ?
-                      detailedCard(context, index, 400) : loadingData()),
+                  itemBuilder: (context, index, realIndex) =>
+                      information.isNotEmpty
+                          ? detailedCard(context, index, 400)
+                          : loadingData()),
             ),
             title(text: "Organizer"),
-            organizerName.isNotEmpty ? circleAvatar(name: organizerName) : Container(height: 200, child: loadingData()),
+            organizerName.isNotEmpty
+                ? circleAvatar(name: organizerName)
+                : Container(height: 200, child: loadingData()),
           ],
         ),
       ),
@@ -103,7 +118,8 @@ class _ViewEventPageState extends State<ViewEventPage> {
         ),
       );
 
-    return Text( // description
+    return Text(
+      // description
       information[index].description,
       style: TextStyle(
         color: Colors.white,
@@ -137,7 +153,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
                 ),
               ),
               Center(
-                child: Padding(
+                  child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: SingleChildScrollView(child: cardText(index)),
               ))
@@ -195,50 +211,49 @@ class _ViewEventPageState extends State<ViewEventPage> {
     );
   }
 
-Widget circleAvatar({required String name}) {
-  return Column(
-    children: [
-      ClipRRect(
-        borderRadius: BorderRadius.circular(100),
-        child: Container(
-          width: 120,
-          height: 120,
-          child: Image.network(
-            organizer!.logo,
-            fit: BoxFit.cover,
+  Widget circleAvatar({required String name}) {
+    return Column(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: Container(
+            width: 120,
+            height: 120,
+            child: Image.network(
+              organizer!.logo,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Text(
-          name,
-          style: TextStyle(fontSize: 20),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            name,
+            style: TextStyle(fontSize: 20),
+          ),
         ),
-      ),
-      MaterialButton(
-        onPressed: () {},
-        child: Text("FOLLOW"),
-        color: Colors.deepPurple,
-        textColor: Colors.white,
-      ),
-      SizedBox(
-        height: 25,
-      )
-    ],
-  );
-}
+        MaterialButton(
+          onPressed: () {},
+          child: Text("FOLLOW"),
+          color: Colors.deepPurple,
+          textColor: Colors.white,
+        ),
+        SizedBox(
+          height: 25,
+        )
+      ],
+    );
+  }
 
-  void getEvent() async {
-    int eventId = 65;
+  void getEvent() async {    
     final responseEvent = await eventsService.getEventById(eventId);
     final responseInformation =
         await informationService.getAllEventInformation(eventId);
     final responseItineraries =
         await itinerariesService.getAllEventItineraries(eventId);
-    final organizerResponse = 
+    final organizerResponse =
         await organizerService.getOrganizerById(responseEvent.organizerId);
-    
+
     setState(() {
       event = responseEvent;
       information = responseInformation;
@@ -258,7 +273,5 @@ Widget title({required text}) => Padding(
     );
 
 Widget loadingData() => Center(
-  child: CircularProgressIndicator(
-
-  ),
-);
+      child: CircularProgressIndicator(),
+    );

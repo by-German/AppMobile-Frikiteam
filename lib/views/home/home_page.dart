@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
               FlatButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => ViewEventPage()));
+                    builder: (BuildContext context) => ViewEventPage(eventId: 65,)));
                 },
                 child: Text("Informacion",
                     style: TextStyle(
