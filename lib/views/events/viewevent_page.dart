@@ -5,9 +5,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:frikiteam/models/events/event.dart';
 import 'package:frikiteam/models/events/event_information.dart';
 import 'package:frikiteam/models/events/itinerary.dart';
+import 'package:frikiteam/models/users/organizer.dart';
 import 'package:frikiteam/services/events/event_information_service.dart';
 import 'package:frikiteam/services/events/event_itineraries.dart';
 import 'package:frikiteam/services/events/events_service.dart';
+import 'package:frikiteam/services/users/organizer_service.dart';
 
 class ViewEventPage extends StatefulWidget {
   @override
@@ -18,8 +20,11 @@ class _ViewEventPageState extends State<ViewEventPage> {
   EventInformationService informationService = EventInformationService();
   EventItinerariesService itinerariesService = EventItinerariesService();
   EventsSevice eventsService = EventsSevice();
+  OrganizerService organizerService = OrganizerService();
 
   Event? event;
+  Organizer? organizer;
+  String organizerName = "";
   List<Itinerary> itineraries = [];
   List<EventInformation> information = [];
 
@@ -68,7 +73,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
                       detailedCard(context, index, 400) : loadingData()),
             ),
             title(text: "Organizer"),
-            circleAvatar(name: "German Mamani"),
+            organizerName.isNotEmpty ? circleAvatar(name: organizerName) : Container(height: 200, child: loadingData()),
           ],
         ),
       ),
@@ -190,29 +195,6 @@ class _ViewEventPageState extends State<ViewEventPage> {
     );
   }
 
-  void getEvent() async {
-    int eventId = 65;
-    final responseEvent = await eventsService.getEventById(eventId);
-    final responseInformation =
-        await informationService.getAllEventInformation(eventId);
-    final responseItineraries =
-        await itinerariesService.getAllEventItineraries(eventId);
-    setState(() {
-      event = responseEvent;
-      information = responseInformation;
-      itineraries = responseItineraries;
-    });
-  }
-}
-
-Widget title({required text}) => Padding(
-      padding: EdgeInsets.symmetric(vertical: 25),
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-      ),
-    );
-
 Widget circleAvatar({required String name}) {
   return Column(
     children: [
@@ -222,7 +204,7 @@ Widget circleAvatar({required String name}) {
           width: 120,
           height: 120,
           child: Image.network(
-            "https://firebasestorage.googleapis.com/v0/b/prueba-43bf8.appspot.com/o/images%2Fpablo.jpg?alt=media&token=c0a9c87e-6954-4355-9cd4-84b9d8294392",
+            organizer!.logo,
             fit: BoxFit.cover,
           ),
         ),
@@ -246,6 +228,34 @@ Widget circleAvatar({required String name}) {
     ],
   );
 }
+
+  void getEvent() async {
+    int eventId = 65;
+    final responseEvent = await eventsService.getEventById(eventId);
+    final responseInformation =
+        await informationService.getAllEventInformation(eventId);
+    final responseItineraries =
+        await itinerariesService.getAllEventItineraries(eventId);
+    final organizerResponse = 
+        await organizerService.getOrganizerById(responseEvent.organizerId);
+    
+    setState(() {
+      event = responseEvent;
+      information = responseInformation;
+      itineraries = responseItineraries;
+      organizer = organizerResponse;
+      organizerName = '${organizer!.firstName} ${organizer!.lastName}';
+    });
+  }
+}
+
+Widget title({required text}) => Padding(
+      padding: EdgeInsets.symmetric(vertical: 25),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+      ),
+    );
 
 Widget loadingData() => Center(
   child: CircularProgressIndicator(
