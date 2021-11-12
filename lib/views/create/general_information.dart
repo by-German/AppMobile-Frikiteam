@@ -9,6 +9,7 @@ import 'package:frikiteam/models/places/city.dart';
 import 'package:frikiteam/models/places/country.dart';
 import 'package:frikiteam/models/places/disctrict.dart';
 import 'package:frikiteam/models/places/place.dart';
+import 'package:frikiteam/services/common/storage_service.dart';
 import 'package:frikiteam/services/events/organizer_events_service.dart';
 import 'package:frikiteam/services/places/place_service.dart';
 import 'package:frikiteam/storage/storage.dart';
@@ -22,6 +23,8 @@ class GeneralInformation extends StatefulWidget {
 }
 
 class _GeneralInformationState extends State<GeneralInformation> {
+  Storage storage = Storage();
+
   PlaceService placeService = PlaceService();
   int? countryId;
   List<Country> countries = [];
@@ -39,6 +42,9 @@ class _GeneralInformationState extends State<GeneralInformation> {
   int? quantity;
   String dateStart = '';
   String dateEnd = '';
+
+  final StorageService storageService = StorageService();
+  
 
   String imagePath = "";
 
@@ -60,7 +66,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
         ),
       );
     }
-    return Image.file(File(imagePath), width: 250, height: 250, fit: BoxFit.cover,);
+    return Container(width: 250, height: 250, child: Image.file(File(imagePath), fit: BoxFit.fill,));
   }
   
   DateTimeRange? dateRange;
@@ -340,25 +346,18 @@ class _GeneralInformationState extends State<GeneralInformation> {
   }
 
   void createEvent() async {
-    print(title);
-    print(description);
-    print(place);
-    print(price);
-    print(quantity);
-    print(dateStart);
-    print(dateEnd);
-
-
-    if (districtId == null /*&& imagePath.isEmpty*/) return;
-
-    Storage storage = Storage();
+    if (districtId == null && imagePath.isEmpty) return;
     final user = await storage.getUserAuth();
+    
+    var resultUrl =  await storageService.upload(imagePath, title);
 
-    // Place placeRequest = Place(id: 0, name: place);
-    // var placeResponse = await placeService.createPlace(districtId!, placeRequest);
+    Place placeRequest = Place(id: 0, name: place);
+    var placeResponse = await placeService.createPlace(districtId!, placeRequest);
+
+    if (resultUrl.isEmpty) resultUrl = "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg";
 
     event = Event(
-      id: 0, logo: "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg",
+      id: 0, logo: resultUrl,
       information: description, 
       name: title, 
       price: price!, 
@@ -369,12 +368,11 @@ class _GeneralInformationState extends State<GeneralInformation> {
       endDate: dateEnd, 
       eventTypeId: 0, 
       organizerId: user.id, 
-      placeId: 55);
+      placeId: placeResponse.id);
 
     var response = await organizerEventsService.createEvent(user.id, event!);
     print("result:");
     print(response.name);
-
 
   }
 }
