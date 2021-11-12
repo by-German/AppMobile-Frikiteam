@@ -1,186 +1,277 @@
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:frikiteam/models/events/event.dart';
+import 'package:frikiteam/models/events/event_information.dart';
+import 'package:frikiteam/models/events/itinerary.dart';
+import 'package:frikiteam/models/users/organizer.dart';
+import 'package:frikiteam/services/events/event_information_service.dart';
+import 'package:frikiteam/services/events/event_itineraries.dart';
+import 'package:frikiteam/services/events/events_service.dart';
+import 'package:frikiteam/services/users/organizer_service.dart';
 
-import 'detailevent_page.dart';
+class ViewEventPage extends StatefulWidget {
+  final int eventId;
 
-class ViewEventPage extends StatelessWidget {
+  ViewEventPage({required this.eventId});
+
+  @override
+  _ViewEventPageState createState() => _ViewEventPageState(eventId: eventId);
+}
+
+class _ViewEventPageState extends State<ViewEventPage> {
+  final int eventId;
+  _ViewEventPageState({required this.eventId});
+
+  EventInformationService informationService = EventInformationService();
+  EventItinerariesService itinerariesService = EventItinerariesService();
+  EventsSevice eventsService = EventsSevice();
+  OrganizerService organizerService = OrganizerService();
+
+  Event? event;
+  Organizer? organizer;
+  String organizerName = "";
+  List<Itinerary> itineraries = [];
+  List<EventInformation> information = [];
+
+  String imageDefault =
+      "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg";
+  bool pressCard = false;
+
+  @override
+  void initState() {
+    getEvent();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: navBar(context),
       bottomNavigationBar: bottomNav(context, 1),
-      backgroundColor: Colors.black,
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
-        child: Center(
-          child: Column(
+        child: Column(
+          children: [
+            imageEvent(context: context, height: 230),
+            title(text: "Itineraries"),
+            Container(
+              height: 170,
+              margin: EdgeInsets.only(bottom: 25),
+              child: itineraries.isNotEmpty
+                  ? ListView.builder(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      itemCount: 3,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(itineraries[index].name),
+                          leading: Icon(Icons
+                              .short_text), // adjust_rounded circle_rounded
+                        );
+                      },
+                    )
+                  : loadingData(),
+            ),
+            title(text: "Detailed Information"),
+            Center(
+              child: CarouselSlider.builder(
+                  options: CarouselOptions(
+                    height: 400,
+                    enlargeCenterPage: true,
+                  ),
+                  itemCount: information.length,
+                  itemBuilder: (context, index, realIndex) =>
+                      information.isNotEmpty
+                          ? detailedCard(context, index, 400)
+                          : loadingData()),
+            ),
+            title(text: "Organizer"),
+            organizerName.isNotEmpty
+                ? circleAvatar(name: organizerName)
+                : Container(height: 200, child: loadingData()),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.shopping_cart),
+        backgroundColor: Colors.deepPurple,
+        splashColor: Colors.white,
+      ),
+    );
+  }
 
-            children: <Widget>[
-              _crearCard1(),
-              _crearCard2(context),
-              _crearCard3(),
-              _crearCard4(),
-              _crearCard5()
-            ],
+  Widget cardText(int index) {
+    if (!pressCard) // title
+      return Container(
+        padding: EdgeInsets.all(10),
+        width: 250,
+        decoration:
+            BoxDecoration(border: Border.all(width: 1, color: Colors.white)),
+        child: Text(
+          information[index].title,
+          style: TextStyle(
+            fontSize: 30,
+            color: Colors.white,
           ),
+          textAlign: TextAlign.center,
         ),
+      );
+
+    return Text(
+      // description
+      information[index].description,
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 17,
+        fontStyle: FontStyle.italic,
       ),
+      textAlign: TextAlign.justify,
     );
   }
 
-  Widget _crearCard1(){
-    return Card(
-      elevation: 5,
-      color: Color.fromRGBO(24, 22, 26, 1),
-
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: <Widget> [
-            Image.asset("assets/images/friki.png", height: 150, width: 400,),
-            SizedBox(height: 10,),
-            Text('Friki Festival', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),),
-            SizedBox(height: 10,),
-            Text('by: Festival', style: TextStyle(color: Colors.white),),
-
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _crearCard2(BuildContext context){
-    return Card(
-      elevation: 5,
-      color: Color.fromRGBO(255, 255, 255, 1),
-
-      child: Container(
-        padding: EdgeInsets.all(50),
-        child: Column(
-          children: <Widget> [
-            Text('Horario', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-            SizedBox(height: 10,),
-            Text('Jueves de 8:00 a 10:00',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            SizedBox(height: 15,),
-            Text('Publico Recomendado', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-            SizedBox(height: 10,),
-            Text('Para Todos',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            SizedBox(height: 15,),
-            Text('Temario / Agenda', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-            SizedBox(height: 8,),
-            Text('Concurso de Cosplay',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            Text('Shows con las mas reconocidas bandas K-Pop',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            Text('Taller Arte, Magia y Manga',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            SizedBox(height: 15,),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => DetailEventPage()));
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
-                fixedSize: MaterialStateProperty.all<Size>(Size.fromWidth(200)),
-              ),
-              child: Text("COMPRAR"),
-            )
-
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _crearCard3() {
-    return Card(
-      elevation: 5,
-      color: Color.fromRGBO(24, 22, 26, 1),
-
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: <Widget>[
-            Text('Eventos', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: Colors.white),),
-            SizedBox(height: 15,),
-            Card(
-              elevation: 5,
-              color: Color.fromRGBO(255, 255, 255, 1),
-
-              child: Container(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  children:<Widget> [
-                    Image.asset("assets/images/otaku.png", height: 150, width: 400,),
-                    SizedBox(height: 10,),
-                    Text('Friki Festival 10ma edición', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-                    SizedBox(height: 20,),
-                    Text('El mundo está cambiando. Todos los paises',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('lo hacen, de hecho. Sí que es cierto que',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('algunos más aceleradamente que otros,',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('pero la realidad no puede mantenerse',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('estática. En esta nueva dimensión se',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('acumulan los eventos que quieren regular',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('los sentidos de los amantes de la cultura',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-                    Text('oriental more...',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-
-                  ],
+  Widget detailedCard(BuildContext context, int index, double height) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          pressCard = !pressCard;
+        });
+      },
+      child: Card(
+          elevation: 3,
+          margin: EdgeInsets.only(bottom: 25),
+          child: Stack(
+            children: [
+              Container(
+                height: height,
+                width: MediaQuery.of(context).size.width,
+                child: Image.network(
+                  information[index].image,
+                  fit: BoxFit.cover,
+                  color: Colors.black54,
+                  colorBlendMode: BlendMode.darken,
                 ),
               ),
-            )
-
-          ],
-        ),
-      ),
+              Center(
+                  child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SingleChildScrollView(child: cardText(index)),
+              ))
+            ],
+          )),
     );
   }
 
-  Widget _crearCard4(){
-    return Card(
-      elevation: 5,
-      color: Color.fromRGBO(255, 255, 255, 1),
-
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: <Widget> [
-            SizedBox(height: 15,),
-            Text('Ubicaciones de los Eventos', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-            SizedBox(height: 15,),
-            Text('Esq.Av. Tomás Valle with, Auxiliar Panamericana Nte.,',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            Text('Independencia 15311 - piso 1 - explanada Metro',  style: TextStyle(color: Colors.deepPurple, fontSize: 12),),
-            SizedBox(height: 15,),
-            Image.asset("assets/images/Map.png", height: 150, width: 400,),
-            SizedBox(height: 15,),
-            Text('Ver Detallado',  style: TextStyle(fontWeight: FontWeight.bold,color: Colors.amber, fontSize: 15),),
-
-          ],
+  Widget imageEvent({required BuildContext context, double? height}) {
+    return Stack(
+      children: [
+        Container(
+          height: height,
+          width: MediaQuery.of(context).size.width,
+          child: Image.network(event?.logo ?? imageDefault, fit: BoxFit.cover),
         ),
-      ),
+        Container(
+          height: height,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              border: Border.all(width: 0.0),
+              gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  stops: [0.03, 1],
+                  colors: [Color.fromRGBO(24, 22, 26, 1), Colors.transparent])),
+        ),
+        Positioned(
+          bottom: 25,
+          left: 25,
+          right: 20,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 50),
+            child: Text(
+              event?.name ?? "Event Name",
+              style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        Positioned(
+            bottom: 18,
+            right: 10,
+            child: IconButton(
+                onPressed: () {
+                  print("siguiendo");
+                },
+                icon: Icon(
+                  Icons.favorite_border,
+                  color: Colors.white,
+                )))
+      ],
     );
   }
 
-  Widget _crearCard5(){
-    return Card(
-      elevation: 5,
-      color: Color.fromRGBO(24, 22, 26, 1),
-
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: <Widget> [
-            SizedBox(height: 15,),
-            Text('Organizador',  style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: 20),),
-            SizedBox(height: 15,),
-            Image.asset("assets/images/friki.png", height: 150, width: 400,),
-            SizedBox(height: 15,),
-            Text('Friki festival es una organización que se encarga de',  style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: 11),),
-            Text('hacer eventos referentes al mundo friki, actualmente',  style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: 11),),
-          ],
+  Widget circleAvatar({required String name}) {
+    return Column(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: Container(
+            width: 120,
+            height: 120,
+            child: Image.network(
+              organizer!.logo,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            name,
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
+        MaterialButton(
+          onPressed: () {},
+          child: Text("FOLLOW"),
+          color: Colors.deepPurple,
+          textColor: Colors.white,
+        ),
+        SizedBox(
+          height: 25,
+        )
+      ],
     );
   }
 
+  void getEvent() async {    
+    final responseEvent = await eventsService.getEventById(eventId);
+    final responseInformation =
+        await informationService.getAllEventInformation(eventId);
+    final responseItineraries =
+        await itinerariesService.getAllEventItineraries(eventId);
+    final organizerResponse =
+        await organizerService.getOrganizerById(responseEvent.organizerId);
 
+    setState(() {
+      event = responseEvent;
+      information = responseInformation;
+      itineraries = responseItineraries;
+      organizer = organizerResponse;
+      organizerName = '${organizer!.firstName} ${organizer!.lastName}';
+    });
+  }
 }
+
+Widget title({required text}) => Padding(
+      padding: EdgeInsets.symmetric(vertical: 25),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+      ),
+    );
+
+Widget loadingData() => Center(
+      child: CircularProgressIndicator(),
+    );

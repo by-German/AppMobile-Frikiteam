@@ -7,7 +7,9 @@ import 'package:http/http.dart' as http;
 class EventItinerariesService {
   Future<List<Itinerary>> getAllEventItineraries(int eventId) async {
     var response = await http.get(Uri.parse('$basePath/events/$eventId/itineraries'));
-    var itineraries = jsonDecode(response.body) as List;
+    
+    var source = Utf8Decoder().convert(response.bodyBytes);
+    var itineraries = jsonDecode(source) as List;
 
     return itineraries.map((e) => Itinerary.fromJson(e)).toList();
   }

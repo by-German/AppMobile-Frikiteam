@@ -7,7 +7,9 @@ import 'package:http/http.dart' as http;
 class EventInformationService {
   Future<List<EventInformation>> getAllEventInformation(int eventId) async {
     var response = await http.get(Uri.parse('$basePath/events/$eventId/information'));
-    var information = jsonDecode(response.body) as List;
+
+    var source = Utf8Decoder().convert(response.bodyBytes);
+    var information = jsonDecode(source) as List;
 
     return information.map((e) => EventInformation.fromJson(e)).toList();
   }
