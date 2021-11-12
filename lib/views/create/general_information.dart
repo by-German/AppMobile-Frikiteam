@@ -14,6 +14,7 @@ import 'package:frikiteam/services/events/organizer_events_service.dart';
 import 'package:frikiteam/services/places/place_service.dart';
 import 'package:frikiteam/storage/storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class GeneralInformation extends StatefulWidget {
   const GeneralInformation({Key? key}) : super(key: key);
@@ -94,8 +95,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
     } else {
       DateTime? start = dateRange?.start;
       DateTime? end = dateRange?.end;
-      dateStart = '${start?.year}-${start?.month}-${start?.day}';
-      dateEnd = '${end?.year}-${end?.month}-${end?.day}';
+      dateStart = DateFormat('yyyy-MM-dd').format(dateRange!.start);
+      dateEnd = DateFormat('yyyy-MM-dd').format(dateRange!.end);
       return '$dateStart - $dateEnd';
     }
   }
@@ -353,8 +354,12 @@ class _GeneralInformationState extends State<GeneralInformation> {
 
     Place placeRequest = Place(id: 0, name: place);
     var placeResponse = await placeService.createPlace(districtId!, placeRequest);
+    print("place id:");
+    print(placeResponse.id);
 
     if (resultUrl.isEmpty) resultUrl = "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg";
+    print("url generated");
+    print(resultUrl);
 
     event = Event(
       id: 0, logo: resultUrl,
@@ -364,8 +369,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
       quantity: quantity!, 
       sold: 0, 
       verified: false, 
-      startDate: dateStart, 
-      endDate: dateEnd, 
+      startDate: DateFormat('yyyy-MM-dd').format(dateRange!.start), 
+      endDate: DateFormat('yyyy-MM-dd').format(dateRange!.end), 
       eventTypeId: 0, 
       organizerId: user.id, 
       placeId: placeResponse.id);
