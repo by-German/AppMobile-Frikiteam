@@ -18,7 +18,8 @@ class _HomePageState extends State<HomePage> {
 
   EventsSevice eventsSevice = EventsSevice();
   Event? event;
-  List<Event> events = [];
+  List<Event> eventsDate = [];
+  List<Event> eventsMoment = [];
 
   @override
   void initState() {
@@ -32,42 +33,138 @@ class _HomePageState extends State<HomePage> {
       appBar: navBar(context),
       bottomNavigationBar: bottomNav(context, 0),
       body: ListView(
-        children: <Widget>[
-          Container(color: Color.fromRGBO(24, 22, 26, 1), child: this.first()),
+        children: [
           Container(
-            margin: EdgeInsets.only(bottom: 30),
+            color: Color.fromRGBO(24, 22, 26, 1),
+            child: first(),
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 25, bottom: 25),
+            color: Colors.white,
+            child: Text("EVENTOS MOMENTANEOS", textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 30, bottom: 30),
             width: double.infinity,
             color: Colors.white,
-            //
-            child: Column(
-              children: <Widget>[
-                Padding(
-                    padding: EdgeInsets.fromLTRB(0, 25, 0, 25),
-                    child: Text('Eventos Momentaneos',
-                        style: TextStyle(
-                            fontSize: 28, fontWeight: FontWeight.bold))),
-                this.second()
-              ],
-            ),
+            child: Container(
+              height: 420,
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: eventsMoment.length,
+                itemBuilder: (context, index){
+                  Event event = eventsMoment[index];
+                  return asd(title: event.name, description: event.information, index: index, id: event.id, design: 0, image: event.logo);
+                },
+              ),
+            )
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 25, bottom: 25),
+            color: Color.fromRGBO(24, 22, 26, 1),
+            child: Text("EVENTOS ESPECIALES", textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+          ),
+          Container(
+              padding: EdgeInsets.only(top: 30, bottom: 30),
+              width: double.infinity,
+              color: Color.fromRGBO(24, 22, 26, 1),
+              child: Container(
+                height: 420,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+
+                  itemCount: eventsDate.length,
+                  itemBuilder: (context, index){
+                    Event event = eventsDate[index];
+                    return asd(title: event.name, description: event.information, index: index, id: event.id, design: 0, image: event.logo);
+                  },
+                ),
+              )
+          ),
+        ],
+      )
+    );
+  }
+
+  //Option 0 is with background white
+  //Option 1 is with background dark
+
+  Widget asd({required title, required description, required id, required index, required design, required image}) {
+    return Container(
+      margin: (index == 0) ? EdgeInsets.only(right: 20, left: 20) : EdgeInsets.only(right: 20),
+      width: 200,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: (design == 1) ? Colors.white : Color.fromRGBO(246, 246, 255, 1),
+      ),
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 15, bottom: 15),
+            width: double.infinity,
+            child: Text(title, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Color.fromRGBO(24, 22, 26, 1)),),
           ),
           Container(
             width: double.infinity,
-            color: Color.fromRGBO(24, 22, 26, 1), //
-            child: Column(
-              children: <Widget>[
-                Padding(
-                    padding: EdgeInsets.fromLTRB(0, 25, 0, 25),
-                    child: Text('Eventos Especiales',
-                        style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white))),
-                this.third(),
-              ],
+            child: Center(
+              child: Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Image.network(
+                  image,
+                  errorBuilder: (ctx, ex, trace) =>
+                      Image.network(image),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 15, right: 15, left: 15),
+            width: double.infinity,
+            height: 80,
+            child: Center(child: Text(description, textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Color.fromRGBO(111, 111, 191, 1))),) ,
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 15, bottom: 15),
+            child: FlatButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => ViewEventPage(eventId: id,)));
+              },
+              child: Text("Informacion",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+              color: Color.fromRGBO(24, 22, 26, 1),
+              minWidth: 120,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 15),
+            child: FlatButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => ViewEventPage(eventId: id,)));
+              },
+              child: Text("Agregar",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+              color: Color.fromRGBO(147, 147, 188, 1),
+              minWidth: 120,
             ),
           ),
         ],
       ),
+
     );
   }
 
@@ -75,7 +172,7 @@ class _HomePageState extends State<HomePage> {
     return Column(
       children: <Widget>[
         Container(
-          height: 500,
+          height: 250,
           margin: new EdgeInsets.symmetric(vertical: 30.0),
           child: Image.asset(
             "assets/images/home.png",
@@ -86,372 +183,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget second() {
-    return Container(
-      height: 500,
-      child: Row(
-        children: [
-          Expanded(
-            flex: 5,
-            child: Container(
-              child: Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.40,
-                  color: Colors.grey,
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 20),
-                        child: Text(
-                          "Otakus",
-                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-                        child:
-                        LimitedBox(
-                          maxWidth: 200,
-                          maxHeight: 200,
-                          child: AspectRatio(
-                            aspectRatio: 1,
-                            child: Container(
-                              width: double.infinity,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-                        child:
-                        LimitedBox(
-                          child: Container(
-                            width: 300,
-                            child: Text(
-                              "Evento relacionado con los superheores, anime y cosplay",
-                              style: TextStyle(fontSize: 17),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 15, bottom: 15),
-                        child: FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => ViewEventPage(eventId: 65,)));
-                          },
-                          child: Text("Informacion",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold)),
-                          color: Color.fromRGBO(24, 22, 26, 1),
-                          minWidth: 120,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 15, bottom: 0),
-                        child: FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => ViewEventPage(eventId: 65,)));
-                          },
-                          child: Text("Agregar",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold)),
-                          color: Color.fromRGBO(147, 147, 188, 1),
-                          minWidth: 120,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 5,
-            child: Container(
-              child: Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.40,
-                  color: Colors.grey,
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 20),
-                        child: Text(
-                          "Otakus",
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-                        child:
-                        LimitedBox(
-                          maxWidth: 200,
-                          maxHeight: 200,
-                          child: AspectRatio(
-                            aspectRatio: 1,
-                            child: Container(
-                              width: double.infinity,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-                        child:
-                        LimitedBox(
-                          child: Container(
-                            width: 300,
-                            child: Text(
-                              "Evento relacionado con los superheores, anime y cosplay",
-                              style: TextStyle(fontSize: 17),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 15, bottom: 15),
-                        child: FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => ViewEventPage(eventId: 65,)));
-                          },
-                          child: Text("Informacion",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold)),
-                          color: Color.fromRGBO(24, 22, 26, 1),
-                          minWidth: 120,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 15, bottom: 0),
-                        child: FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => ViewEventPage(eventId: 65,)));
-                          },
-                          child: Text("Agregar",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold)),
-                          color: Color.fromRGBO(147, 147, 188, 1),
-                          minWidth: 120,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-
-    );
-  }
-
-  Widget third() {
-    return Container(
-      height: 500,
-      child: Row(
-        children: [
-          Expanded(
-            flex: 5,
-            child: Container(
-              child: Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.40,
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 20),
-                        child: Text(
-                          "Otakus",
-                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-                        child:
-                        LimitedBox(
-                          maxWidth: 200,
-                          maxHeight: 200,
-                          child: AspectRatio(
-                            aspectRatio: 1,
-                            child: Container(
-                              width: double.infinity,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-                        child:
-                        LimitedBox(
-                          child: Container(
-                            width: 300,
-                            child: Text(
-                              "Evento relacionado con los superheores, anime y cosplay",
-                              style: TextStyle(fontSize: 17),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 15, bottom: 15),
-                        child: FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => ViewEventPage(eventId: 65,)));
-                          },
-                          child: Text("Informacion",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold)),
-                          color: Color.fromRGBO(24, 22, 26, 1),
-                          minWidth: 120,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 15, bottom: 0),
-                        child: FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => ViewEventPage(eventId: 65,)));
-                          },
-                          child: Text("Agregar",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold)),
-                          color: Color.fromRGBO(147, 147, 188, 1),
-                          minWidth: 120,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 5,
-            child: Container(
-              child: Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.40,
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 20),
-                        child: Text(
-                          "Otakus",
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-                        child:
-                        LimitedBox(
-                          maxWidth: 200,
-                          maxHeight: 200,
-                          child: AspectRatio(
-                            aspectRatio: 1,
-                            child: Container(
-                              width: double.infinity,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-                        child:
-                        LimitedBox(
-                          child: Container(
-                            width: 300,
-                            child: Text(
-                              "Evento relacionado con los superheores, anime y cosplay",
-                              style: TextStyle(fontSize: 17),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 15, bottom: 15),
-                        child: FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => ViewEventPage(eventId: 65,)));
-                          },
-                          child: Text("Informacion",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold)),
-                          color: Color.fromRGBO(24, 22, 26, 1),
-                          minWidth: 120,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 15, bottom: 0),
-                        child: FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => ViewEventPage(eventId: 65,)));
-                          },
-                          child: Text("Agregar",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold)),
-                          color: Color.fromRGBO(147, 147, 188, 1),
-                          minWidth: 120,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-
-    );
-  }
-
-  Widget asd() {
-    return Container(
-      width: 20,
-      height: 20,
-      color: Colors.red,
-    );
-}
-
   void getEvents() async{
     final _events = await eventsSevice.getAllEvents();
     setState(() {
-      events = _events;
+      eventsMoment = _events;
+      eventsDate = _events;
     });
+    eventsMoment.sort((a, b) => a.sold.compareTo(b.sold));
+    eventsDate.sort((a, b) => a.startDate.compareTo(b.startDate));
   }
 }
