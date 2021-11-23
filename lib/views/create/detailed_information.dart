@@ -27,6 +27,8 @@ class _DetailedInformationState extends State<DetailedInformation>{
   List<Itinerary> items = [];
   EventItinerariesService itinerariesService = new EventItinerariesService();
 
+  bool loading = false;
+
   openGallery() async {
     final ImagePicker _picker = ImagePicker();
     var picture = await _picker.pickImage(source: ImageSource.gallery);
@@ -215,6 +217,7 @@ class _DetailedInformationState extends State<DetailedInformation>{
                   for (var i=0; i < _listItineraries.length ; i++){
                     items.add(new Itinerary(id: 12, name: _listItineraries[i]));
                   }
+                  createItineraries();
                   // setState(() {
                   //   loading = true;
                   // });
@@ -234,6 +237,12 @@ class _DetailedInformationState extends State<DetailedInformation>{
     );
   }
 
+  void createItineraries() async {
+    await itinerariesService.postEventItineraries(1, items);
+    setState(() {
+      loading = false;
+    });
+  }
 
 
   void _login(BuildContext context) {
