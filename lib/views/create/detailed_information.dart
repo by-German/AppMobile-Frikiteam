@@ -4,6 +4,7 @@ import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
 import 'package:frikiteam/models/events/itinerary.dart';
 import 'package:frikiteam/services/events/event_itineraries.dart';
+import 'package:frikiteam/views/create/my_events.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -11,13 +12,19 @@ import 'dart:io';
 
 
 class DetailedInformation extends StatefulWidget{
+  final int eventId;
 
-  DetailedInformation({Key? key}) : super(key: key);
+  DetailedInformation({required this.eventId});
 
-  _DetailedInformationState createState() => _DetailedInformationState();
+  @override
+  _DetailedInformationState createState() => _DetailedInformationState(eventId: eventId);
 }
 
 class _DetailedInformationState extends State<DetailedInformation>{
+  final int eventId;
+
+  _DetailedInformationState({required this.eventId});
+
   String name = '';
   bool _loading = false;
   List<String> _listItineraries = [];
@@ -104,8 +111,6 @@ class _DetailedInformationState extends State<DetailedInformation>{
       },
     );
   }
-
-
 
 
   @override
@@ -212,15 +217,16 @@ class _DetailedInformationState extends State<DetailedInformation>{
                 ],
               ),
               SizedBox(height: 20),
+              !loading ?
               ElevatedButton(
                 onPressed: () {
+                  setState(() {
+                    loading = true;
+                  });
                   for (var i=0; i < _listItineraries.length ; i++){
-                    items.add(new Itinerary(id: 12, name: _listItineraries[i]));
+                    items.add(new Itinerary(id: 0, name: _listItineraries[i]));
                   }
                   createItineraries();
-                  // setState(() {
-                  //   loading = true;
-                  // });
                   // createEvent();
                 },
                 style: ButtonStyle(
@@ -228,7 +234,7 @@ class _DetailedInformationState extends State<DetailedInformation>{
                   fixedSize: MaterialStateProperty.all<Size>(Size.fromWidth(500)),
                 ),
                 child: Text("Save"),
-              ),
+              ): CircularProgressIndicator(),
               SizedBox(height: 20),
       ]
 
@@ -238,10 +244,14 @@ class _DetailedInformationState extends State<DetailedInformation>{
   }
 
   void createItineraries() async {
-    await itinerariesService.postEventItineraries(1, items);
+    await itinerariesService.postEventItineraries(eventId, items);
     setState(() {
       loading = false;
     });
+
+    // despues de crear los itinerarios, estoy haciendo que redireccione a "mis eventos creados"
+    Navigator.of(context).push(MaterialPageRoute(
+         builder: (BuildContext context) => MyEvents()));
   }
 
 

@@ -13,6 +13,7 @@ import 'package:frikiteam/services/common/storage_service.dart';
 import 'package:frikiteam/services/events/organizer_events_service.dart';
 import 'package:frikiteam/services/places/place_service.dart';
 import 'package:frikiteam/storage/storage.dart';
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
@@ -305,13 +306,10 @@ class _GeneralInformationState extends State<GeneralInformation> {
                             !loading ?
                             ElevatedButton(
                               onPressed: () {
-                                // TODO: como pasar eventId = 165
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => DetailedInformation()));
-                                // setState(() {
-                                //   loading = true;
-                                // });
-                                // createEvent();
+                                setState(() {
+                                  loading = true;
+                                });
+                                createEvent();
                               },
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
@@ -378,11 +376,13 @@ class _GeneralInformationState extends State<GeneralInformation> {
       organizerId: user.id, 
       placeId: placeResponse.id);
 
-    await organizerEventsService.createEvent(user.id, event!);
+    final reponse = await organizerEventsService.createEvent(user.id, event!);
+
     setState(() {
       loading = false;
     });
+
     Navigator.of(context).push(MaterialPageRoute(
-         builder: (BuildContext context) => DetailedInformation()));
+         builder: (BuildContext context) => DetailedInformation(eventId: reponse.id,)));
   }
 }
