@@ -106,13 +106,14 @@ class _MyEventsState extends State<MyEvents> {
                   margin: new EdgeInsets.symmetric(vertical: 15.0),
                   width: 130,
                   height: 130,
-                  child: Image.network(events[index].logo),
+                  child: Image.network(events[index].logo, fit: BoxFit.fill,),
                 ),
                 Padding(
                     padding: EdgeInsets.only(left: 15, right: 15),
                     child: Text(events[index].name,
                         style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold))),
+                            fontSize: 22, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,)),
                 Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 8),
                     child: (Text(events[index].information,

@@ -20,7 +20,7 @@ class OrganizerEventsService {
         body: jsonEncode(event),
         headers: headers
       );
-    
+        
     return Event.fromJson(jsonDecode(response.body));
   }
 

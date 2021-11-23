@@ -34,7 +34,7 @@ class _ListEventPage extends State<ListEventPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: navBar(context),
-        bottomNavigationBar: bottomNav(context, 2),
+        bottomNavigationBar: bottomNav(context, 1),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -52,7 +52,7 @@ class _ListEventPage extends State<ListEventPage> {
                           controller: fname,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50.0),
+                              borderRadius: BorderRadius.circular(15.0),
                             ),
                             filled: true,
                             hintText: 'Filter by name',
@@ -61,12 +61,6 @@ class _ListEventPage extends State<ListEventPage> {
                         ),
                       )
                   )
-              ),
-              Container(
-                padding: EdgeInsets.only(top: 20, bottom: 20),
-                color: Color.fromRGBO(24, 22, 26, 1),
-                child: Center(child: Text( 'Eventos Seguidos', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
-                ),
               ),
               Container(
                 child: ListView.builder(

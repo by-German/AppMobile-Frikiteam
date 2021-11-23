@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "532923786597",
+    "project_id": "prueba-43bf8",
+    "storage_bucket": "prueba-43bf8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:532923786597:android:3e05c29182efcdab1ead8c",
+        "android_client_info": {
+          "package_name": "com.frikiteam.frikiteam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "532923786597-bkget6b5dkjpen52epvm69ha9scl9vjb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJ-AmEXTwzddAvQXBGVIcZw2Yjo-28BG8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "532923786597-bkget6b5dkjpen52epvm69ha9scl9vjb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
