@@ -306,12 +306,12 @@ class _GeneralInformationState extends State<GeneralInformation> {
                             ElevatedButton(
                               onPressed: () {
                                 // TODO: como pasar eventId = 165
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => DetailedInformation()));
-                                // setState(() {
-                                //   loading = true;
-                                // });
-                                // createEvent();
+                                // Navigator.of(context).push(MaterialPageRoute(
+                                //     builder: (BuildContext context) => DetailedInformation()));
+                                setState(() {
+                                  loading = true;
+                                });
+                                createEvent();
                               },
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
