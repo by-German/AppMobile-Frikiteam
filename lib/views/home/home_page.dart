@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:frikiteam/models/events/event.dart';
+import 'package:frikiteam/services/events/events_service.dart';
 import 'package:frikiteam/views/events/viewevent_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,49 +16,155 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late AnimationController _controller;
 
+  EventsSevice eventsSevice = EventsSevice();
+  Event? event;
+  List<Event> eventsDate = [];
+  List<Event> eventsMoment = [];
+
+  @override
+  void initState() {
+    getEvents();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: navBar(context),
       bottomNavigationBar: bottomNav(context, 0),
       body: ListView(
-        children: <Widget>[
-          Container(color: Color.fromRGBO(24, 22, 26, 1), child: this.first()),
+        children: [
           Container(
-            width: double.infinity,
-            height: 500,
+            color: Color.fromRGBO(24, 22, 26, 1),
+            child: first(),
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 25, bottom: 25),
             color: Colors.white,
-            //
-            child: Column(
-              children: <Widget>[
-                Padding(
-                    padding: EdgeInsets.fromLTRB(0, 25, 0, 25),
-                    child: Text('Eventos Momentaneos',
-                        style: TextStyle(
-                            fontSize: 28, fontWeight: FontWeight.bold))),
-                this.second(),
-              ],
-            ),
+            child: Text("EVENTOS MOMENTANEOS", textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 30, bottom: 30),
+            width: double.infinity,
+            color: Colors.white,
+            child: Container(
+              height: 420,
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: eventsMoment.length,
+                itemBuilder: (context, index){
+                  Event event = eventsMoment[index];
+                  return asd(title: event.name, description: event.information, index: index, id: event.id, design: 0, image: event.logo);
+                },
+              ),
+            )
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 25, bottom: 25),
+            color: Color.fromRGBO(24, 22, 26, 1),
+            child: Text("EVENTOS ESPECIALES", textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+          ),
+          Container(
+              padding: EdgeInsets.only(top: 30, bottom: 30),
+              width: double.infinity,
+              color: Color.fromRGBO(24, 22, 26, 1),
+              child: Container(
+                height: 420,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+
+                  itemCount: eventsDate.length,
+                  itemBuilder: (context, index){
+                    Event event = eventsDate[index];
+                    return asd(title: event.name, description: event.information, index: index, id: event.id, design: 0, image: event.logo);
+                  },
+                ),
+              )
+          ),
+        ],
+      )
+    );
+  }
+
+  //Option 0 is with background white
+  //Option 1 is with background dark
+
+  Widget asd({required title, required description, required id, required index, required design, required image}) {
+    return Container(
+      margin: (index == 0) ? EdgeInsets.only(right: 20, left: 20) : EdgeInsets.only(right: 20),
+      width: 200,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: (design == 1) ? Colors.white : Color.fromRGBO(246, 246, 255, 1),
+      ),
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 15, bottom: 15),
+            width: double.infinity,
+            child: Text(title, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Color.fromRGBO(24, 22, 26, 1)),),
           ),
           Container(
             width: double.infinity,
-            height: 500,
-            color: Color.fromRGBO(24, 22, 26, 1), //
-            child: Column(
-              children: <Widget>[
-                Padding(
-                    padding: EdgeInsets.fromLTRB(0, 25, 0, 25),
-                    child: Text('Eventos Especiales',
-                        style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white))),
-                this.third(),
-              ],
+            child: Center(
+              child: Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Image.network(
+                  image,
+                  errorBuilder: (ctx, ex, trace) =>
+                      Image.network(image),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 15, right: 15, left: 15),
+            width: double.infinity,
+            height: 80,
+            child: Center(child: Text(description, textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Color.fromRGBO(111, 111, 191, 1))),) ,
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 15, bottom: 15),
+            child: FlatButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => ViewEventPage(eventId: id,)));
+              },
+              child: Text("Informacion",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+              color: Color.fromRGBO(24, 22, 26, 1),
+              minWidth: 120,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 15),
+            child: FlatButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => ViewEventPage(eventId: id,)));
+              },
+              child: Text("Agregar",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+              color: Color.fromRGBO(147, 147, 188, 1),
+              minWidth: 120,
             ),
           ),
         ],
       ),
+
     );
   }
 
@@ -64,6 +172,7 @@ class _HomePageState extends State<HomePage> {
     return Column(
       children: <Widget>[
         Container(
+          height: 250,
           margin: new EdgeInsets.symmetric(vertical: 30.0),
           child: Image.asset(
             "assets/images/home.png",
@@ -74,214 +183,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget second() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Container(
-          width: 180,
-          height: 360,
-          color: Color.fromRGBO(246, 246, 255, 1),
-          alignment: Alignment.topCenter,
-          child: Column(
-            children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                  child: Text('Comic Con',
-                      style: TextStyle(
-                          fontSize: 22, fontWeight: FontWeight.bold))),
-              Container(
-                margin: new EdgeInsets.symmetric(vertical: 15.0),
-                width: 130,
-                height: 130,
-                child: Image.asset("assets/images/download.png"),
-              ),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 8),
-                  child: (Text(
-                      "Evento relacionado con los superheores, anime y cosplay",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16)))),
-              FlatButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => ViewEventPage(eventId: 65,)));
-                },
-                child: Text("Informacion",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
-                color: Color.fromRGBO(24, 22, 26, 1),
-                minWidth: 120,
-              ),
-              FlatButton(
-                onPressed: () async {
-                  /* TODO: Testing endpoints */     
-
-
-                },
-                child: Text("Agregar",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
-                color: Color.fromRGBO(147, 147, 188, 1),
-                minWidth: 120,
-              )
-            ],
-          ),
-        ),
-        Container(
-          width: 180,
-          height: 360,
-          color: Color.fromRGBO(246, 246, 255, 1),
-          alignment: Alignment.topCenter,
-          child: Column(
-            children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                  child: Text('Comic Con',
-                      style: TextStyle(
-                          fontSize: 22, fontWeight: FontWeight.bold))),
-              Container(
-                margin: new EdgeInsets.symmetric(vertical: 15.0),
-                width: 130,
-                height: 130,
-                child: Image.asset("assets/images/download.png"),
-              ),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 8),
-                  child: (Text(
-                      "Evento relacionado con los superheores, anime y cosplay",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16)))),
-              FlatButton(
-                onPressed: () {},
-                child: Text("Informacion",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
-                color: Color.fromRGBO(24, 22, 26, 1),
-                minWidth: 120,
-              ),
-              FlatButton(
-                onPressed: () {},
-                child: Text("Agregar",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
-                color: Color.fromRGBO(147, 147, 188, 1),
-                minWidth: 120,
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget third() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Container(
-          width: 180,
-          height: 360,
-          color: Color.fromRGBO(246, 246, 255, 1),
-          alignment: Alignment.topCenter,
-          child: Column(
-            children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                  child: Text('Comic Con',
-                      style: TextStyle(
-                          fontSize: 22, fontWeight: FontWeight.bold))),
-              Container(
-                margin: new EdgeInsets.symmetric(vertical: 15.0),
-                width: 130,
-                height: 130,
-                child: Image.asset("assets/images/download.png"),
-              ),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 8),
-                  child: (Text(
-                      "Evento relacionado con los superheores, anime y cosplay",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16)))),
-              FlatButton(
-                onPressed: () {},
-                child: Text("Informacion",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
-                color: Color.fromRGBO(24, 22, 26, 1),
-                minWidth: 120,
-              ),
-              FlatButton(
-                onPressed: () {},
-                child: Text("Agregar",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
-                color: Color.fromRGBO(147, 147, 188, 1),
-                minWidth: 120,
-              )
-            ],
-          ),
-        ),
-        Container(
-          width: 180,
-          height: 360,
-          color: Color.fromRGBO(24, 22, 26, 1),
-          alignment: Alignment.topCenter,
-          child: Column(
-            children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                  child: Text('Comic Con',
-                      style: TextStyle(
-                          fontSize: 22, fontWeight: FontWeight.bold))),
-              Container(
-                margin: new EdgeInsets.symmetric(vertical: 15.0),
-                width: 130,
-                height: 130,
-                child: Image.asset("assets/images/download.png"),
-              ),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 8),
-                  child: (Text(
-                      "Evento relacionado con los superheores, anime y cosplay",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16)))),
-              FlatButton(
-                onPressed: () {},
-                child: Text("Informacion",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
-                color: Color.fromRGBO(24, 22, 26, 1),
-                minWidth: 120,
-              ),
-              FlatButton(
-                onPressed: () {},
-                child: Text("Agregar",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
-                color: Color.fromRGBO(147, 147, 188, 1),
-                minWidth: 120,
-              )
-            ],
-          ),
-        ),
-      ],
-    );
+  void getEvents() async{
+    final _events = await eventsSevice.getAllEvents();
+    setState(() {
+      eventsMoment = _events;
+      eventsDate = _events;
+    });
+    eventsMoment.sort((a, b) => a.sold.compareTo(b.sold));
+    eventsDate.sort((a, b) => a.startDate.compareTo(b.startDate));
   }
 }
