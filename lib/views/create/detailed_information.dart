@@ -63,7 +63,6 @@ class _DetailedInformationState extends State<DetailedInformation>{
     return ListTile(
       title: Icon(Icons.add, color: Colors.white,),
       onTap: () {
-        print(_listItineraries);
         final controller = TextEditingController();
         final field = TextField(
           controller: controller,
@@ -213,9 +212,9 @@ class _DetailedInformationState extends State<DetailedInformation>{
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // TODO: como pasar eventId = 165
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => DetailedInformation()));
+                  for (var i=0; i < _listItineraries.length ; i++){
+                    items.add(new Itinerary(id: 12, name: _listItineraries[i]));
+                  }
                   // setState(() {
                   //   loading = true;
                   // });
