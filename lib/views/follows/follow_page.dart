@@ -4,8 +4,10 @@ import 'package:flutter/widgets.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
 import 'package:frikiteam/models/events/event.dart';
+import 'package:frikiteam/services/events/event_follow_service.dart';
 import 'package:frikiteam/services/events/events_service.dart';
-
+import 'package:frikiteam/storage/storage.dart';
+import 'package:intl/intl.dart';
 class FollowPage extends StatefulWidget {
   @override
   _FollowPage createState() => _FollowPage();
@@ -13,7 +15,9 @@ class FollowPage extends StatefulWidget {
 
   class _FollowPage extends State<FollowPage> {
 
-  EventsSevice eventsSevice = EventsSevice();
+    final Storage storageService = Storage();
+
+  EventFollowService eventsSevice = EventFollowService();
   Event? event;
   List<Event> events = [];
 
@@ -31,56 +35,55 @@ class FollowPage extends StatefulWidget {
     return Scaffold(
         appBar: navBar(context),
         bottomNavigationBar: bottomNav(context, 2),
-        body: ListView(
-          children: <Widget>[
-            Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 15, bottom: 15),
-                  child: Text(
-                    'Eventos Seguidos',
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-                  ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: 15, bottom: 15),
+                child: Center(child: Text( 'Eventos Seguidos', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),),
                 ),
-              ],
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: events.length,
-              itemBuilder: (context, index){
-                Event event = events[index];
-                return conditional2(text: event.information, title: event.name ,date: "event.startDate", image: event.logo ,index: index);
-              },
-            ),
-          ],
+              ),
+              Container(
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: events.length,
+                  itemBuilder: (context, index){
+                    Event event = events[index];
+                    return conditional2(text: event.information, title: event.name ,date: event.startDate, image: event.logo ,index: index);
+                  },
+                ),
+              )
+            ],
+          ),
         )
     );
   }
 
   Widget conditional2({required text, required title, required date, required image , required index}) {
-    return LimitedBox(
-      maxHeight: 150,
+    return Form(
       child: Container(
+        padding: EdgeInsets.only(bottom: 20),
         color: (index % 2 == 0) ? Color.fromRGBO(24, 22, 26, 1) : Colors.white,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
+            Flexible(
               flex: 1,
               child: Align(
                 child: Container(
-                  margin: EdgeInsets.all(15),
                   width: 90,
                   height: 90,
-                  child: Image.network(
-                    image,
-                    errorBuilder: (ctx, ex, trace) =>
-                        Image.network("https://images.unsplash.com/photo-1547721064-da6cfb341d50"),
-                  ),
+                  child: Center(
+                    child: Image.network(
+                      image,
+                      errorBuilder: (ctx, ex, trace) =>
+                          Image.network(image),
+                    ),
+                  )
                 ),
               ),
             ),
-            Expanded(
+            Flexible(
                 flex: 2,
                 child: Column(
                   children: [
@@ -109,7 +112,7 @@ class FollowPage extends StatefulWidget {
                       child: Container(
                         margin: EdgeInsets.only(top: 20),
                         child: Text(
-                          'Fecha' + date,
+                          'Fecha: ' + date,
                           style: TextStyle(fontSize: 14, color: (index % 2 == 0) ? Colors.white : Color.fromRGBO(147, 147, 188, 1)),
                         ),
                       ),
@@ -124,9 +127,24 @@ class FollowPage extends StatefulWidget {
   }
 
   void getEvents() async{
-    final _events = await eventsSevice.getAllEvents();
+    final user = await storageService.getUserAuth();
+
+    final DateFormat format = DateFormat("yyyy-MM-dd");
+    final _events = await eventsSevice.getAllEventFollow(user.id);
     setState(() {
       events = _events;
     });
+    
+    
+
+    for(int i = 0; i < events.length; i++){
+      var d = DateTime.fromMillisecondsSinceEpoch(events[i].startDate);
+      var a = format.format(events[i].startDate);
+      var year = events[i].startDate.toString().substring(0,4);
+      var month =  events[i].startDate.toString().substring(4,6);
+      var day =  events[i].startDate.toString().substring(6,8);
+      var date = day + "/" + month + "/" + year;
+      events[i].startDate = date;
+    }
   }
 }
