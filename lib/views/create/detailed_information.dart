@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:frikiteam/models/events/itinerary.dart';
+import 'package:frikiteam/services/events/event_itineraries.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -16,10 +18,14 @@ class DetailedInformation extends StatefulWidget{
 }
 
 class _DetailedInformationState extends State<DetailedInformation>{
+  String name = '';
   bool _loading = false;
+  List<String> _listItineraries = [];
   List<TextEditingController> _controllers = [];
   List<TextField> _fields = [];
   String imagePath = "";
+  List<Itinerary> items = [];
+  EventItinerariesService itinerariesService = new EventItinerariesService();
 
   openGallery() async {
     final ImagePicker _picker = ImagePicker();
@@ -57,6 +63,7 @@ class _DetailedInformationState extends State<DetailedInformation>{
     return ListTile(
       title: Icon(Icons.add, color: Colors.white,),
       onTap: () {
+        print(_listItineraries);
         final controller = TextEditingController();
         final field = TextField(
           controller: controller,
@@ -71,12 +78,15 @@ class _DetailedInformationState extends State<DetailedInformation>{
             filled: true,
             labelText: "Itinerary ${_controllers.length + 1}",
           ),
+          onChanged: (value) => name = value,
         );
         SizedBox(height: 10);
 
         setState(() {
           _controllers.add(controller);
           _fields.add(field);
+          _listItineraries.add(name);
+
         });
       },
     );
@@ -201,15 +211,23 @@ class _DetailedInformationState extends State<DetailedInformation>{
                 ],
               ),
               SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  onPressed: () {
-                  },
-                  icon: Icon(Icons.add, color: Colors.white,),
-                  iconSize: 30,
+              ElevatedButton(
+                onPressed: () {
+                  // TODO: como pasar eventId = 165
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => DetailedInformation()));
+                  // setState(() {
+                  //   loading = true;
+                  // });
+                  // createEvent();
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
+                  fixedSize: MaterialStateProperty.all<Size>(Size.fromWidth(500)),
                 ),
+                child: Text("Save"),
               ),
+              SizedBox(height: 20),
       ]
 
         ),
