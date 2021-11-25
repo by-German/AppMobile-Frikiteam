@@ -11,6 +11,7 @@ import 'package:frikiteam/services/events/event_itineraries.dart';
 import 'package:frikiteam/services/events/events_service.dart';
 import 'package:frikiteam/services/follows/follow_events_service.dart';
 import 'package:frikiteam/services/follows/follow_organizer_service.dart';
+import 'package:frikiteam/services/payment/payment_service.dart';
 import 'package:frikiteam/services/users/organizer_service.dart';
 import 'package:frikiteam/storage/storage.dart';
 
@@ -101,7 +102,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => _onButtonPressed(),
         child: Icon(Icons.shopping_cart),
         backgroundColor: Colors.deepPurple,
         splashColor: Colors.white,
@@ -307,6 +308,88 @@ class _ViewEventPageState extends State<ViewEventPage> {
     });  
   }
   
+  String email = '';
+  int? cardNumber;
+  int? cvc;
+  String date = '';
+  bool buying = false;
+  PaymentService paymentService = PaymentService();
+
+  _onButtonPressed() {
+    showModalBottomSheet(context: context, builder: (context) {
+      return SingleChildScrollView(
+        padding: EdgeInsets.all(35),
+        child: Container(
+          child: Column(
+            children: [
+              Text("Price: S/. "+ event!.price.toString(), style: TextStyle(fontSize: 20)),
+              SizedBox(height: 20,),
+              TextField(
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (value) => email = value,
+                decoration: inputDecoration(text: "Email", icon: Icons.email)
+              ),
+              SizedBox(height: 20,),
+              TextField(
+                keyboardType: TextInputType.number,
+                onChanged: (value) => cardNumber = int.parse(value),
+                decoration: inputDecoration(text: "Number card", icon: Icons.payment)
+              ),
+              SizedBox(height: 20,),
+              Row(
+                children: [
+                  Container(
+                    width: 150,
+                    child: TextField(
+                      keyboardType: TextInputType.datetime,
+                      onChanged: (value) => date = value,
+                      decoration: inputDecoration(text: "MM/AA", icon: Icons.calendar_today_outlined),
+                    ),
+                  ),
+                  Expanded(child: SizedBox()),
+                  Container(
+                    width: 120,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) => cvc = int.parse(value),
+                      decoration: inputDecoration(text: "CVC", icon: Icons.security),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 20,),
+              !buying ? MaterialButton(
+                onPressed: () {
+                  setState(() { buying = true; });
+                  buyEvent();
+                },
+                child: Text("BUY"),
+                color: Colors.deepPurple,
+                textColor: Colors.white,
+              ) : loadingData(),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  void buyEvent() async{
+    final res = await paymentService.createPayment(
+      description: event!.name, 
+      amount: event!.price, 
+      email: email, 
+      eventId: eventId
+    );
+    setState(() { buying = !buying; });
+    if (res) {
+      Navigator.pop(context);
+    }
+    else {
+      print("purchase error!");
+    }
+  }
+
 }
 
 Widget title({required text}) => Padding(
@@ -319,4 +402,9 @@ Widget title({required text}) => Padding(
 
 Widget loadingData() => Center(
       child: CircularProgressIndicator(),
+    );
+
+InputDecoration inputDecoration({required String text, required IconData icon}) => InputDecoration(
+      labelText: text,
+      suffixIcon: Icon(icon),
     );
