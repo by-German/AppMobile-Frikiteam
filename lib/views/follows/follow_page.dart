@@ -4,9 +4,11 @@ import 'package:flutter/widgets.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
 import 'package:frikiteam/models/events/event.dart';
+import 'package:frikiteam/models/users/organizer.dart';
 import 'package:frikiteam/services/events/event_follow_service.dart';
 import 'package:frikiteam/services/events/events_service.dart';
 import 'package:frikiteam/storage/storage.dart';
+import 'package:frikiteam/views/events/viewevent_page.dart';
 import 'package:intl/intl.dart';
 class FollowPage extends StatefulWidget {
   @override
@@ -15,11 +17,11 @@ class FollowPage extends StatefulWidget {
 
   class _FollowPage extends State<FollowPage> {
 
-    final Storage storageService = Storage();
-
-  EventFollowService eventsSevice = EventFollowService();
+  Storage storage = Storage();
+  EventFollowService followService = EventFollowService();
   Event? event;
   List<Event> events = [];
+  List<Organizer> organizers = [];
 
   String imageDefault =
   "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg";
@@ -40,6 +42,26 @@ class FollowPage extends StatefulWidget {
             children: [
               Container(
                 margin: EdgeInsets.only(top: 15, bottom: 15),
+                child: Center(child: Text( 'Organizadores Seguidos', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),),
+                ),
+              ),
+              Container(
+                  width: double.infinity,
+                child: Container(
+                  height: 100,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: organizers.length,
+                    itemBuilder: (context, index){
+                      Organizer organizer = organizers[index];
+                      return conditional1(index: index, image: organizer.logo, id: 1);
+                    },
+                  ),
+                )
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 15, bottom: 15),
                 child: Center(child: Text( 'Eventos Seguidos', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),),
                 ),
               ),
@@ -50,7 +72,7 @@ class FollowPage extends StatefulWidget {
                   itemCount: events.length,
                   itemBuilder: (context, index){
                     Event event = events[index];
-                    return conditional2(text: event.information, title: event.name ,date: event.startDate, image: event.logo ,index: index);
+                    return conditional2(text: event.information, title: event.name ,date: event.startDate, image: event.logo ,index: index, id: event.id);
                   },
                 ),
               )
@@ -60,65 +82,30 @@ class FollowPage extends StatefulWidget {
     );
   }
 
-  Widget conditional2({required text, required title, required date, required image , required index}) {
-    return Form(
+  Widget conditional1({required image , required index, required id}) {
+    return GestureDetector(
+      onTap: (){
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => ViewEventPage(eventId: id)));
+      },
       child: Container(
-        padding: EdgeInsets.only(bottom: 20),
-        color: (index % 2 == 0) ? Color.fromRGBO(24, 22, 26, 1) : Colors.white,
-        child: Row(
+        width: 100,
+        height: 50,
+        margin: (index == 0) ? EdgeInsets.only(left: 40, right: 40) : EdgeInsets.only(right: 40),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.blue),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Flexible(
-              flex: 1,
-              child: Align(
-                child: Container(
-                  width: 90,
-                  height: 90,
-                  child: Center(
-                    child: Image.network(
-                      image,
-                      errorBuilder: (ctx, ex, trace) =>
-                          Image.network(image),
-                    ),
-                  )
-                ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(50),
+              child: Image.network(
+                image,
+                errorBuilder: (ctx, ex, trace) =>
+                    Image.network(image),
+                fit: BoxFit.fill,
+                height: 100,
+                width: 100,
               ),
-            ),
-            Flexible(
-                flex: 2,
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        margin: EdgeInsets.only(top: 20),
-                        child: Text(
-                          title,
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: (index % 2 == 0) ? Colors.white : Color.fromRGBO(24, 22, 26, 1)),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        margin: EdgeInsets.only(top: 20),
-                        child: Text(
-                          text,
-                          style: TextStyle(fontSize: 14, color: (index % 2 == 0) ? Colors.white : Color.fromRGBO(147, 147, 188, 1)),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        margin: EdgeInsets.only(top: 20),
-                        child: Text(
-                          'Fecha: ' + date,
-                          style: TextStyle(fontSize: 14, color: (index % 2 == 0) ? Colors.white : Color.fromRGBO(147, 147, 188, 1)),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
             ),
           ],
         ),
@@ -126,25 +113,93 @@ class FollowPage extends StatefulWidget {
     );
   }
 
-  void getEvents() async{
-    final user = await storageService.getUserAuth();
 
+  Widget conditional2({required text, required title, required date, required image , required index, required id}) {
+    return Form(
+      child: GestureDetector(
+        onTap: (){
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => ViewEventPage(eventId: id)));
+        },
+        child: Container(
+          padding: EdgeInsets.only(bottom: 20),
+          color: (index % 2 == 0) ? Color.fromRGBO(24, 22, 26, 1) : Colors.white,
+          child: Row(
+            children: [
+              Flexible(
+                flex: 1,
+                child: Align(
+                  child: Container(
+                      width: 90,
+                      height: 90,
+                      child: Center(
+                        child: Image.network(
+                          image,
+                          errorBuilder: (ctx, ex, trace) =>
+                              Image.network(image),
+                        ),
+                      )
+                  ),
+                ),
+              ),
+              Flexible(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: EdgeInsets.only(top: 20),
+                          child: Text(
+                            title,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: (index % 2 == 0) ? Colors.white : Color.fromRGBO(24, 22, 26, 1)),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: EdgeInsets.only(top: 20),
+                          child: Text(
+                            text,
+                            style: TextStyle(fontSize: 14, color: (index % 2 == 0) ? Colors.white : Color.fromRGBO(147, 147, 188, 1)),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: EdgeInsets.only(top: 20),
+                          child: Text(
+                            'Fecha: ' + date,
+                            style: TextStyle(fontSize: 14, color: (index % 2 == 0) ? Colors.white : Color.fromRGBO(147, 147, 188, 1)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void getEvents() async{
     final DateFormat format = DateFormat("yyyy-MM-dd");
-    final _events = await eventsSevice.getAllEventFollow(user.id);
+    final user = await storage.getUserAuth();
+    final _organizers = await followService.getAllOrganizersByCustomer(user.id);
+    final _events = await followService.getAllEventFollow(user.id);
     setState(() {
+      organizers = _organizers;
       events = _events;
     });
-    
-    
 
     for(int i = 0; i < events.length; i++){
-      var d = DateTime.fromMillisecondsSinceEpoch(events[i].startDate);
-      var a = format.format(events[i].startDate);
-      var year = events[i].startDate.toString().substring(0,4);
-      var month =  events[i].startDate.toString().substring(4,6);
-      var day =  events[i].startDate.toString().substring(6,8);
-      var date = day + "/" + month + "/" + year;
-      events[i].startDate = date;
+      var date = DateTime.fromMillisecondsSinceEpoch(events[i].startDate, isUtc: true);
+      final String formatted = format.format(date);
+      events[i].startDate = formatted;
     }
   }
 }

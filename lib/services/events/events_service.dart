@@ -6,10 +6,12 @@ import 'package:http/http.dart' as http;
 
 class EventsSevice {
   Future<List<Event>> getAllEvents() async {
+
     var response = await http.get(Uri.parse('$basePath/events'));
     var source = Utf8Decoder().convert(response.bodyBytes);
-    
     var events = jsonDecode(source) as List;
+
+    print(events);
     return events.map((e) => Event.fromJson(e)).toList();
   }
 
