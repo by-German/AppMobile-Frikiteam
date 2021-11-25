@@ -9,7 +9,9 @@ import 'package:frikiteam/models/users/organizer.dart';
 import 'package:frikiteam/services/events/event_information_service.dart';
 import 'package:frikiteam/services/events/event_itineraries.dart';
 import 'package:frikiteam/services/events/events_service.dart';
+import 'package:frikiteam/services/follows/follow_organizer_service.dart';
 import 'package:frikiteam/services/users/organizer_service.dart';
+import 'package:frikiteam/storage/storage.dart';
 
 class ViewEventPage extends StatefulWidget {
   final int eventId;
@@ -24,16 +26,19 @@ class _ViewEventPageState extends State<ViewEventPage> {
   final int eventId;
   _ViewEventPageState({required this.eventId});
 
+  Storage storage = Storage();
   EventInformationService informationService = EventInformationService();
   EventItinerariesService itinerariesService = EventItinerariesService();
   EventsSevice eventsService = EventsSevice();
   OrganizerService organizerService = OrganizerService();
+  FollowOrganizerService followOrganizerService = FollowOrganizerService();
 
   Event? event;
   Organizer? organizer;
   String organizerName = "";
   List<Itinerary> itineraries = [];
   List<EventInformation> information = [];
+  bool isFollowOrganizer = false;
 
   String imageDefault =
       "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg";
@@ -233,8 +238,10 @@ class _ViewEventPageState extends State<ViewEventPage> {
           ),
         ),
         MaterialButton(
-          onPressed: () {},
-          child: Text("FOLLOW"),
+          onPressed: () {
+            followOrganizer();
+          },
+          child: isFollowOrganizer ? Text("FOLLOWING") : Text("FOLLOW"),
           color: Colors.deepPurple,
           textColor: Colors.white,
         ),
@@ -262,6 +269,19 @@ class _ViewEventPageState extends State<ViewEventPage> {
       organizerName = '${organizer!.firstName} ${organizer!.lastName}';
     });
   }
+
+  void followOrganizer() async {
+    final user = await storage.getUserAuth();
+    if(isFollowOrganizer) {
+      await followOrganizerService.unFollowOrganizer(user.id, organizer!.id);
+    } else {
+      await followOrganizerService.followOrganizer(user.id, organizer!.id);
+    }
+    setState(() {
+      isFollowOrganizer = !isFollowOrganizer;
+    });
+  }
+
 }
 
 Widget title({required text}) => Padding(
