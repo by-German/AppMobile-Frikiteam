@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
             width: double.infinity,
             color: Colors.white,
             child: Container(
-              height: 420,
+              height: 450,
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
               width: double.infinity,
               color: Color.fromRGBO(24, 22, 26, 1),
               child: Container(
-                height: 420,
+                height: 450,
                 child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
