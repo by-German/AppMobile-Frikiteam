@@ -101,7 +101,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => _onButtonPressed(),
         child: Icon(Icons.shopping_cart),
         backgroundColor: Colors.deepPurple,
         splashColor: Colors.white,
@@ -307,6 +307,70 @@ class _ViewEventPageState extends State<ViewEventPage> {
     });  
   }
   
+  int? cardNumber;
+  int? cvc;
+  String date = '';
+
+  _onButtonPressed() {
+    showModalBottomSheet(context: context, builder: (context) {
+      return SingleChildScrollView(
+        padding: EdgeInsets.all(35),
+        child: Container(
+          child: Column(
+            children: [
+              Text("Price: S/. "+ event!.price.toString(), style: TextStyle(fontSize: 20)),
+              SizedBox(height: 20,),
+              TextField(
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (value) => cardNumber = int.parse(value),
+                decoration: inputDecoration(text: "Email", icon: Icons.email)
+              ),
+              SizedBox(height: 20,),
+              TextField(
+                keyboardType: TextInputType.number,
+                onChanged: (value) => cardNumber = int.parse(value),
+                decoration: inputDecoration(text: "Number card", icon: Icons.payment)
+              ),
+              SizedBox(height: 20,),
+              Row(
+                children: [
+                  Container(
+                    width: 150,
+                    child: TextField(
+                      keyboardType: TextInputType.datetime,
+                      onChanged: (value) => cardNumber = int.parse(value),
+                      decoration: inputDecoration(text: "MM/AA", icon: Icons.calendar_today_outlined),
+                    ),
+                  ),
+                  Expanded(child: SizedBox()),
+                  Container(
+                    width: 120,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) => cardNumber = int.parse(value),
+                      decoration: inputDecoration(text: "CVC", icon: Icons.security),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 20,),
+              MaterialButton(
+                onPressed: () { buyEvent();},
+                child: Text("BUY"),
+                color: Colors.deepPurple,
+                textColor: Colors.white,
+              ),            
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  void buyEvent() async{
+    Navigator.pop(context);
+  }
+
 }
 
 Widget title({required text}) => Padding(
@@ -319,4 +383,9 @@ Widget title({required text}) => Padding(
 
 Widget loadingData() => Center(
       child: CircularProgressIndicator(),
+    );
+
+InputDecoration inputDecoration({required String text, required IconData icon}) => InputDecoration(
+      labelText: text,
+      suffixIcon: Icon(icon),
     );
