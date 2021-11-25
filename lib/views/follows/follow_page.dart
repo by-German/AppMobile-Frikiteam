@@ -5,20 +5,23 @@ import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
 import 'package:frikiteam/models/events/event.dart';
 import 'package:frikiteam/models/users/organizer.dart';
-import 'package:frikiteam/services/events/event_follow_service.dart';
-import 'package:frikiteam/services/events/events_service.dart';
+import 'package:frikiteam/services/follows/follow_events_service.dart';
+import 'package:frikiteam/services/follows/follow_organizer_service.dart';
 import 'package:frikiteam/storage/storage.dart';
 import 'package:frikiteam/views/events/viewevent_page.dart';
 import 'package:intl/intl.dart';
+
 class FollowPage extends StatefulWidget {
   @override
   _FollowPage createState() => _FollowPage();
-  }
+}
 
-  class _FollowPage extends State<FollowPage> {
+class _FollowPage extends State<FollowPage> {
 
   Storage storage = Storage();
-  EventFollowService followService = EventFollowService();
+  FollowEventsService followEventsService = FollowEventsService();
+  FollowOrganizerService followOrganizerService = FollowOrganizerService();
+
   Event? event;
   List<Event> events = [];
   List<Organizer> organizers = [];
@@ -41,15 +44,16 @@ class FollowPage extends StatefulWidget {
           child: Column(
             children: [
               Container(
-                margin: EdgeInsets.only(top: 15, bottom: 15),
+                margin: EdgeInsets.only(top: 20, bottom: 20),
                 child: Center(child: Text( 'Organizadores Seguidos', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),),
                 ),
               ),
               Container(
                   width: double.infinity,
                 child: Container(
-                  height: 100,
-                  child: ListView.builder(
+                  margin: EdgeInsets.symmetric(vertical: 20),
+                  height: 80,
+                  child: organizers.isNotEmpty ? ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemCount: organizers.length,
@@ -57,16 +61,16 @@ class FollowPage extends StatefulWidget {
                       Organizer organizer = organizers[index];
                       return conditional1(index: index, image: organizer.logo, id: 1);
                     },
-                  ),
+                  ): Center(child: Text("No esta siguiendo a ningún organizador", style: TextStyle(fontSize: 16),)),
                 )
               ),
               Container(
-                margin: EdgeInsets.only(top: 15, bottom: 15),
+                margin: EdgeInsets.only(top: 25, bottom: 35),
                 child: Center(child: Text( 'Eventos Seguidos', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),),
                 ),
               ),
               Container(
-                child: ListView.builder(
+                child: events.isNotEmpty ? ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: events.length,
@@ -74,7 +78,7 @@ class FollowPage extends StatefulWidget {
                     Event event = events[index];
                     return conditional2(text: event.information, title: event.name ,date: event.startDate, image: event.logo ,index: index, id: event.id);
                   },
-                ),
+                ): Center(child: Text("No esta siguiendo a ningún evento", style: TextStyle(fontSize: 16),)),
               )
             ],
           ),
@@ -89,8 +93,7 @@ class FollowPage extends StatefulWidget {
             builder: (BuildContext context) => ViewEventPage(eventId: id)));
       },
       child: Container(
-        width: 100,
-        height: 50,
+        width: 80,
         margin: (index == 0) ? EdgeInsets.only(left: 40, right: 40) : EdgeInsets.only(right: 40),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.blue),
         child: Column(
@@ -102,9 +105,8 @@ class FollowPage extends StatefulWidget {
                 image,
                 errorBuilder: (ctx, ex, trace) =>
                     Image.network(image),
-                fit: BoxFit.fill,
-                height: 100,
-                width: 100,
+                fit: BoxFit.cover,
+                height: 80,
               ),
             ),
           ],
@@ -189,8 +191,8 @@ class FollowPage extends StatefulWidget {
   void getEvents() async{
     final DateFormat format = DateFormat("yyyy-MM-dd");
     final user = await storage.getUserAuth();
-    final _organizers = await followService.getAllOrganizersByCustomer(user.id);
-    final _events = await followService.getAllEventFollow(user.id);
+    final _organizers = await followOrganizerService.getOrganizerFollowed(user.id);
+    final _events = await followEventsService.getEventsFollowed(user.id);
     setState(() {
       organizers = _organizers;
       events = _events;

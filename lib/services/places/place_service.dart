@@ -4,6 +4,7 @@ import 'package:frikiteam/models/places/city.dart';
 import 'package:frikiteam/models/places/country.dart';
 import 'package:frikiteam/models/places/disctrict.dart';
 import 'package:frikiteam/models/places/place.dart';
+import 'package:frikiteam/models/places/place_response.dart';
 import 'package:frikiteam/models/shared/pageable_response.dart';
 import 'package:frikiteam/services/common/http.common.dart';
 import 'package:http/http.dart' as http;
@@ -37,5 +38,14 @@ class PlaceService {
     );
 
     return Place.fromJson(jsonDecode(response.body));
+  }
+  
+  Future<PlaceResponse> getPlaceById(int placeId) async {
+    final response = await http.get(
+      Uri.parse('$basePath/districts/1/places/$placeId')
+    );
+    var source = Utf8Decoder().convert(response.bodyBytes);
+    PlaceResponse placeResponse = PlaceResponse.fromJson(jsonDecode(response.body));
+    return placeResponse;
   }
 }

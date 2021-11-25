@@ -56,7 +56,7 @@ class FollowEventsService {
     return events;
   }
 
-    Future<bool> isFollowingEvent(int customerId, int eventId) async {
+  Future<bool> isFollowingEvent(int customerId, int eventId) async {
     final events = await getEventsFollowed(customerId);
     for (var event in events) {
       if (event.id == eventId) return true;
