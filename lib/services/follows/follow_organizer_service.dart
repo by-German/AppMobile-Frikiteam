@@ -55,4 +55,12 @@ class FollowOrganizerService {
     List<Organizer> organizers = pageableResponse.content.map((e) => Organizer.fromJson(e)).toList();
     return organizers;
   }
+
+  Future<bool> isFollowingOrganizer(int customerId, int organizerId) async {
+    final organizers = await getOrganizerFollowed(customerId);
+    for (var organizer in organizers) {
+      if (organizer.id == organizerId) return true;
+    }
+    return false;
+  }
 }

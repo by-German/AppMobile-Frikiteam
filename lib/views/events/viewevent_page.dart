@@ -253,6 +253,8 @@ class _ViewEventPageState extends State<ViewEventPage> {
   }
 
   void getEvent() async {    
+    final user = await storage.getUserAuth();
+
     final responseEvent = await eventsService.getEventById(eventId);
     final responseInformation =
         await informationService.getAllEventInformation(eventId);
@@ -260,6 +262,8 @@ class _ViewEventPageState extends State<ViewEventPage> {
         await itinerariesService.getAllEventItineraries(eventId);
     final organizerResponse =
         await organizerService.getOrganizerById(responseEvent.organizerId);
+    final isFollowingOrganizer = 
+        await followOrganizerService.isFollowingOrganizer(user.id, responseEvent.organizerId);
 
     setState(() {
       event = responseEvent;
@@ -267,6 +271,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
       itineraries = responseItineraries;
       organizer = organizerResponse;
       organizerName = '${organizer!.firstName} ${organizer!.lastName}';
+      isFollowOrganizer = isFollowingOrganizer;
     });
   }
 
