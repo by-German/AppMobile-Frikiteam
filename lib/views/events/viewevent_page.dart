@@ -9,7 +9,10 @@ import 'package:frikiteam/models/users/organizer.dart';
 import 'package:frikiteam/services/events/event_information_service.dart';
 import 'package:frikiteam/services/events/event_itineraries.dart';
 import 'package:frikiteam/services/events/events_service.dart';
+import 'package:frikiteam/services/follows/follow_events_service.dart';
+import 'package:frikiteam/services/follows/follow_organizer_service.dart';
 import 'package:frikiteam/services/users/organizer_service.dart';
+import 'package:frikiteam/storage/storage.dart';
 
 class ViewEventPage extends StatefulWidget {
   final int eventId;
@@ -24,16 +27,21 @@ class _ViewEventPageState extends State<ViewEventPage> {
   final int eventId;
   _ViewEventPageState({required this.eventId});
 
+  Storage storage = Storage();
   EventInformationService informationService = EventInformationService();
   EventItinerariesService itinerariesService = EventItinerariesService();
   EventsSevice eventsService = EventsSevice();
   OrganizerService organizerService = OrganizerService();
+  FollowOrganizerService followOrganizerService = FollowOrganizerService();
+  FollowEventsService followEventsService = FollowEventsService();
 
   Event? event;
   Organizer? organizer;
   String organizerName = "";
   List<Itinerary> itineraries = [];
   List<EventInformation> information = [];
+  bool isFollowOrganizer = false;
+  bool isFollowEvent = false;
 
   String imageDefault =
       "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg";
@@ -66,7 +74,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
                         return ListTile(
                           title: Text(itineraries[index].name),
                           leading: Icon(Icons
-                              .short_text), // adjust_rounded circle_rounded
+                              .short_text),
                         );
                       },
                     )
@@ -199,11 +207,13 @@ class _ViewEventPageState extends State<ViewEventPage> {
         Positioned(
             bottom: 18,
             right: 10,
-            child: IconButton(
+            child: IconButton( //
                 onPressed: () {
-                  print("siguiendo");
+                  followEvent();
                 },
                 icon: Icon(
+                  isFollowEvent ?
+                  Icons.favorite :
                   Icons.favorite_border,
                   color: Colors.white,
                 )))
@@ -233,8 +243,10 @@ class _ViewEventPageState extends State<ViewEventPage> {
           ),
         ),
         MaterialButton(
-          onPressed: () {},
-          child: Text("FOLLOW"),
+          onPressed: () {
+            followOrganizer();
+          },
+          child: isFollowOrganizer ? Text("FOLLOWING") : Text("FOLLOW"),
           color: Colors.deepPurple,
           textColor: Colors.white,
         ),
@@ -246,6 +258,8 @@ class _ViewEventPageState extends State<ViewEventPage> {
   }
 
   void getEvent() async {    
+    final user = await storage.getUserAuth();
+
     final responseEvent = await eventsService.getEventById(eventId);
     final responseInformation =
         await informationService.getAllEventInformation(eventId);
@@ -253,6 +267,10 @@ class _ViewEventPageState extends State<ViewEventPage> {
         await itinerariesService.getAllEventItineraries(eventId);
     final organizerResponse =
         await organizerService.getOrganizerById(responseEvent.organizerId);
+    final isFollowingOrganizer = 
+        await followOrganizerService.isFollowingOrganizer(user.id, responseEvent.organizerId);
+    final isFollowingEvent = 
+        await followEventsService.isFollowingEvent(user.id, eventId);
 
     setState(() {
       event = responseEvent;
@@ -260,8 +278,35 @@ class _ViewEventPageState extends State<ViewEventPage> {
       itineraries = responseItineraries;
       organizer = organizerResponse;
       organizerName = '${organizer!.firstName} ${organizer!.lastName}';
+      isFollowOrganizer = isFollowingOrganizer;
+      isFollowEvent = isFollowingEvent;
     });
   }
+
+  void followOrganizer() async {
+    final user = await storage.getUserAuth();
+    if(isFollowOrganizer) {
+      await followOrganizerService.unFollowOrganizer(user.id, organizer!.id);
+    } else {
+      await followOrganizerService.followOrganizer(user.id, organizer!.id);
+    }
+    setState(() {
+      isFollowOrganizer = !isFollowOrganizer;
+    });
+  }
+
+  void followEvent() async {
+    final user = await storage.getUserAuth();
+    if(isFollowEvent) {
+      await followEventsService.unFollowEvent(user.id, eventId);
+    } else {
+      await followEventsService.followEvent(user.id, eventId);
+    }
+    setState(() {
+      isFollowEvent = !isFollowEvent;
+    });  
+  }
+  
 }
 
 Widget title({required text}) => Padding(

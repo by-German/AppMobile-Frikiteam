@@ -1,15 +1,15 @@
 import 'dart:convert';
 
-import 'package:frikiteam/models/events/event.dart';
 import 'package:frikiteam/models/shared/pageable_response.dart';
+import 'package:frikiteam/models/users/organizer.dart';
 import 'package:frikiteam/services/common/http.common.dart';
 import 'package:frikiteam/storage/storage.dart';
 import 'package:http/http.dart' as http;
 
-class FollowEventsService {
-  final storage = Storage();
+class FollowOrganizerService {
+  var storage = Storage();
 
-  Future<bool> followEvent(int customerId, int eventId) async {
+  Future<bool> followOrganizer(int customerId, int organizerId) async {
     var token = await storage.getToken();
     Map<String, String> headers = {
           'Content-type': 'application/json',
@@ -17,14 +17,14 @@ class FollowEventsService {
         };
 
     var response = await http.post(
-        Uri.parse('$basePath/customers/$customerId/events/$eventId'),
+        Uri.parse('$basePath/customers/$customerId/organizers/$organizerId'),
         headers: headers
       );
     
     return response.statusCode == 200; 
   }
 
-  Future<bool> unFollowEvent(int customerId, int eventId) async {
+  Future<bool> unFollowOrganizer(int customerId, int organizerId) async {
     var token = await storage.getToken();
     Map<String, String> headers = {
           'Content-type': 'application/json',
@@ -32,14 +32,14 @@ class FollowEventsService {
         };
 
     var response = await http.delete(
-        Uri.parse('$basePath/customers/$customerId/events/$eventId'),
+        Uri.parse('$basePath/customers/$customerId/organizers/$organizerId'),
         headers: headers
       );
     
     return response.statusCode == 200; 
   }
-
-  Future<List<Event>> getEventsFollowed(int customerId) async {
+  
+  Future<List<Organizer>> getOrganizerFollowed(int customerId) async {
     var token = await storage.getToken();
     Map<String, String> headers = {
           'Content-type': 'application/json',
@@ -47,21 +47,20 @@ class FollowEventsService {
         };
 
     var response = await http.get(
-        Uri.parse('$basePath/customers/$customerId/events'),
+        Uri.parse('$basePath/customers/$customerId/organizers'),
         headers: headers
       );
     
     PageableResponse pageableResponse = PageableResponse.fromJson(json.decode(response.body));
-    List<Event> events = pageableResponse.content.map((e) => Event.fromJson(e)).toList();
-    return events;
+    List<Organizer> organizers = pageableResponse.content.map((e) => Organizer.fromJson(e)).toList();
+    return organizers;
   }
 
-    Future<bool> isFollowingEvent(int customerId, int eventId) async {
-    final events = await getEventsFollowed(customerId);
-    for (var event in events) {
-      if (event.id == eventId) return true;
+  Future<bool> isFollowingOrganizer(int customerId, int organizerId) async {
+    final organizers = await getOrganizerFollowed(customerId);
+    for (var organizer in organizers) {
+      if (organizer.id == organizerId) return true;
     }
     return false;
   }
-
 }
