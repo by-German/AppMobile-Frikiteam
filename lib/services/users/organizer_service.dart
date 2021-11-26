@@ -25,4 +25,16 @@ class OrganizerService {
     return await userAuthService.auth(user.email, user.password);
   }
 
+  Future<Organizer> updateOrganizer({required int id, required String firstName, required String lastName, required String email, required String password}) async {
+    Organizer organizer = Organizer(id: 0, firstName: firstName, lastName: lastName, email: email, password: password, logo: "default", description: "", verified: false);
+
+    var response = await http.put(
+      Uri.parse('$basePath/organizers/$id'),
+      body: jsonEncode(organizer),
+      headers: {"Content-Type": "application/json"}
+    );
+
+    return Organizer.fromJson(jsonDecode(response.body));
+  }
+
 }

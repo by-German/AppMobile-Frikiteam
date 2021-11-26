@@ -3,6 +3,7 @@ import 'package:frikiteam/views/create/my_events.dart';
 import 'package:frikiteam/views/follows/follow_page.dart';
 import 'package:frikiteam/views/home/home_page.dart';
 import 'package:frikiteam/views/events/list_events_page.dart';
+import 'package:frikiteam/views/users/user_profile.dart';
 
 Widget bottomNav(BuildContext context, int index) {
   return BottomNavigationBar(
@@ -24,6 +25,9 @@ Widget bottomNav(BuildContext context, int index) {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => MyEvents()));
           break;
+        case 4:
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => UserProfile()));
         }
     },
     showSelectedLabels: false,
@@ -35,6 +39,7 @@ Widget bottomNav(BuildContext context, int index) {
       BottomNavigationBarItem(icon: Icon(Icons.search), label: "search"),
       BottomNavigationBarItem(icon: Icon(Icons.notifications), label: "notifications"),
       BottomNavigationBarItem(icon: Icon(Icons.add_circle_outline), label: "create"),
+      BottomNavigationBarItem(icon: Icon(Icons.person), label: "user profile")
     ],
   );
 }

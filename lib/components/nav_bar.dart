@@ -1,17 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frikiteam/views/users/user_profile.dart';
 
-PreferredSizeWidget navBar(BuildContext context) {
+PreferredSizeWidget navBar(BuildContext context,  {bool leadingActive = false, String title = ""}) {
   return AppBar(
-    leading: IconButton(
-      onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => UserProfile()));
-      },
-      icon: Icon(Icons.person),
-      iconSize: 30,
-    ),
+    // leading: IconButton(
+    //   onPressed: () {
+    //     Navigator.of(context).push(MaterialPageRoute(
+    //         builder: (BuildContext context) => UserProfile()));
+    //   },
+    //   icon: Icon(Icons.person),
+    //   iconSize: 30,
+    // ),
+    automaticallyImplyLeading: leadingActive,
+    title: Text(title),
     actions: [
       Padding(
         padding: const EdgeInsets.only(right: 15),
@@ -22,5 +23,6 @@ PreferredSizeWidget navBar(BuildContext context) {
       ),
     ],
     backgroundColor: Color.fromRGBO(24, 22, 26, 1),
+    elevation: 0,
   );
 }
