@@ -148,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => HomePage()));
     } else {
       setState(() {
-        message = "credenciales incorrectos";
+        message = "Wrong credentials!";
         processing = success;
       });
     }
