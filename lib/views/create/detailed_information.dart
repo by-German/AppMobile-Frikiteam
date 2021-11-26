@@ -10,7 +10,6 @@ import 'package:frikiteam/services/events/event_itineraries.dart';
 import 'package:frikiteam/views/create/my_events.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:frikiteam/storage/storage.dart';
-import 'package:http/http.dart';
 import 'dart:io';
 
 
@@ -126,7 +125,7 @@ class _DetailedInformationState extends State<DetailedInformation>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: navBar(context),
+      appBar: navBar(context, title: "Detailed information"),
       bottomNavigationBar: bottomNav(context, 0),
       backgroundColor: Color.fromRGBO(24, 22, 26, 1),
       body: SingleChildScrollView(
@@ -167,7 +166,7 @@ class _DetailedInformationState extends State<DetailedInformation>{
               ),
               SizedBox(height: 15,),
 
-              SizedBox(height: 400.0, child: _listView()),
+              SizedBox(height: 200.0, child: _listView()),
               Center(child: dynamicButton()),
 
 

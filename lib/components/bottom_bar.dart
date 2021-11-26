@@ -37,7 +37,7 @@ Widget bottomNav(BuildContext context, int index) {
     items: [
       BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
       BottomNavigationBarItem(icon: Icon(Icons.search), label: "search"),
-      BottomNavigationBarItem(icon: Icon(Icons.notifications), label: "notifications"),
+      BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: "favorites"),
       BottomNavigationBarItem(icon: Icon(Icons.add_circle_outline), label: "create"),
       BottomNavigationBarItem(icon: Icon(Icons.person), label: "user profile")
     ],
