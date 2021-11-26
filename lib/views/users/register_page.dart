@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frikiteam/services/users/customer_service.dart';
+import 'package:frikiteam/services/users/organizer_service.dart';
 import 'package:frikiteam/services/users/user_auth_service.dart';
-import 'package:frikiteam/views/users/login_page.dart';
+import 'package:frikiteam/views/home/home_page.dart';
 
 class RegisterPage extends StatefulWidget{
   RegisterPage({Key? key}) : super(key: key);
@@ -108,6 +110,14 @@ class _RegisterPageState extends State<RegisterPage>{
                                       Expanded(child: Text("I accept the terms and conditions",
                                         style: TextStyle(color: Colors.white, fontSize: 16,),
                                       )),
+                                    MaterialButton(
+                                      textColor: Colors.purple[200],
+                                      onPressed: (){
+                                        // TODO: view terms and condt. or Popview
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text("Readme")
+                                    ),
                                       Switch(value: accept, onChanged: (value) {
                                         setState(() {
                                           this.accept = !this.accept;
@@ -120,13 +130,13 @@ class _RegisterPageState extends State<RegisterPage>{
                                 SizedBox(height: 10),
                                 !processing ?
                                 ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: accept ? () {
                                     setState(() {
                                       processing = true;
                                       message = '';
                                     });
-                                    // loginAction(email, password);
-                                  },
+                                    registerAction();
+                                  }: null,
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
                                     fixedSize: MaterialStateProperty.all<Size>(Size.fromWidth(500)),
@@ -150,7 +160,7 @@ class _RegisterPageState extends State<RegisterPage>{
                                     MaterialButton(
                                       textColor: Colors.purple[200],
                                       onPressed: (){
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+                                        Navigator.pop(context);
                                       },
                                       child: Text("Log in")
                                     ),
@@ -171,6 +181,25 @@ class _RegisterPageState extends State<RegisterPage>{
     );
   }
 
+  void registerAction() async {
+    // TODO: enable button with value of accept
+    var success = false;
+    if (isOrganizer) {
+      final organizerService = OrganizerService();
+      success = await organizerService.createOrganizer(firstName: firstName, lastName: lastName, email: email, password: password);
+    } else {
+      final customerService = CustomerService();
+      success = await customerService.createCustomer(firstName: firstName, lastName: lastName, email: email, password: password);
+    }
+
+    if (success) Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+    else {
+      setState(() {
+        message = "An error occurred while registering";
+        processing = success;
+      });
+    }
+  }
 
 }
 
