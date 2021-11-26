@@ -2,10 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
+import 'package:frikiteam/models/events/event_information.dart';
 import 'package:frikiteam/models/events/itinerary.dart';
+import 'package:frikiteam/services/common/storage_service.dart';
+import 'package:frikiteam/services/events/event_information_service.dart';
 import 'package:frikiteam/services/events/event_itineraries.dart';
 import 'package:frikiteam/views/create/my_events.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:frikiteam/storage/storage.dart';
+import 'package:http/http.dart';
 import 'dart:io';
 
 
@@ -22,17 +27,23 @@ class DetailedInformation extends StatefulWidget{
 
 class _DetailedInformationState extends State<DetailedInformation>{
   final int eventId;
+  Storage storage = Storage();
 
   _DetailedInformationState({required this.eventId});
 
-  String name = '';
+  String title = '';
+  String description = '';
   bool _loading = false;
   List<String> _listItineraries = [];
   List<TextEditingController> _controllers = [];
   List<TextField> _fields = [];
   String imagePath = "";
   List<Itinerary> items = [];
+  List<EventInformation> information = [];
   EventItinerariesService itinerariesService = new EventItinerariesService();
+  EventInformationService eventInformationService = new EventInformationService();
+
+  final StorageService storageService = StorageService();
 
   bool loading = false;
 
@@ -86,14 +97,13 @@ class _DetailedInformationState extends State<DetailedInformation>{
             filled: true,
             labelText: "Itinerary ${_controllers.length + 1}",
           ),
-          onChanged: (value) => name = value,
         );
         SizedBox(height: 10);
 
         setState(() {
           _controllers.add(controller);
           _fields.add(field);
-          _listItineraries.add(name);
+
 
         });
       },
@@ -182,6 +192,7 @@ class _DetailedInformationState extends State<DetailedInformation>{
                     filled: true
                 ),
                 keyboardType: TextInputType.text,
+                onChanged: (value) => title = value,
               ),
               SizedBox(height: 10),
               TextField(
@@ -197,6 +208,7 @@ class _DetailedInformationState extends State<DetailedInformation>{
                     filled: true
                 ),
                 keyboardType: TextInputType.text,
+                onChanged: (value) => description = value,
               ),
               SizedBox(height: 19),
 
@@ -223,9 +235,13 @@ class _DetailedInformationState extends State<DetailedInformation>{
                   setState(() {
                     loading = true;
                   });
+                  for (var i=0; i < _controllers.length ; i++){
+                    _listItineraries.add(_controllers[i].text);
+                  }
                   for (var i=0; i < _listItineraries.length ; i++){
                     items.add(new Itinerary(id: 0, name: _listItineraries[i]));
                   }
+
                   createItineraries();
                   // createEvent();
                 },
@@ -245,6 +261,10 @@ class _DetailedInformationState extends State<DetailedInformation>{
 
   void createItineraries() async {
     await itinerariesService.postEventItineraries(eventId, items);
+    var resultUrl =  await storageService.upload(imagePath, title);
+    if (resultUrl.isEmpty) resultUrl = "https://www.kenyons.com/wp-content/uploads/2017/04/default-image-620x600.jpg";
+    information.add(new EventInformation(id: 0, title: title, description: description, image: resultUrl));
+    await eventInformationService.postEventInformation(eventId, information);
     setState(() {
       loading = false;
     });
