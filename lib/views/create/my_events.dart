@@ -28,7 +28,7 @@ class _MyEventsState extends State<MyEvents> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: navBar(context),
+      appBar: navBar(context, title: "Create event"),
       bottomNavigationBar: bottomNav(context, 3),
       backgroundColor: Color.fromRGBO(24, 22, 26, 1),
       body: ListView(
@@ -97,7 +97,7 @@ class _MyEventsState extends State<MyEvents> {
         child: Stack(children: [
           Container(
             width: 200,
-            height: 360,
+            height: 380,
             color: Color.fromRGBO(246, 246, 255, 1),
             alignment: Alignment.topCenter,
             child: Column(
@@ -123,7 +123,7 @@ class _MyEventsState extends State<MyEvents> {
             ),
           ),
           Positioned(
-            bottom: 50,
+            bottom: 35,
             left: 40,
             child: MaterialButton(
               onPressed: () => deleteEvent(events[index].id),

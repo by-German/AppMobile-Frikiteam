@@ -33,7 +33,7 @@ class _ListEventPage extends State<ListEventPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: navBar(context),
+        appBar: navBar(context, title: "Search events"),
         bottomNavigationBar: bottomNav(context, 1),
         body: SingleChildScrollView(
           child: Column(

@@ -37,7 +37,7 @@ class _UserProfileState extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: navBar(context),
+      appBar: navBar(context, title: "User profile"),
       bottomNavigationBar: bottomNav(context, 4),
       backgroundColor: Color.fromRGBO(24, 22, 26, 1),
       body: SingleChildScrollView(

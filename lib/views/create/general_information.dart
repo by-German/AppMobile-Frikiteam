@@ -113,17 +113,11 @@ class _GeneralInformationState extends State<GeneralInformation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: navBar(context),
+        appBar: navBar(context, leadingActive: true, title: "General information"),
         bottomNavigationBar: bottomNav(context, 3),
         backgroundColor: Color.fromRGBO(24, 22, 26, 1),
         body: ListView(
             children: [
-              SizedBox(height: 20,),
-              Text(
-                "General Information",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 25),
-              ),
               SizedBox(height: 20,),
               Form(child: Column(
                 children: [

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frikiteam/components/bottom_bar.dart';
 import 'package:frikiteam/components/nav_bar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:frikiteam/models/events/event.dart';
@@ -61,8 +60,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: navBar(context),
-      bottomNavigationBar: bottomNav(context, 1),
+      appBar: navBar(context, leadingActive: true, ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -284,8 +282,6 @@ class _ViewEventPageState extends State<ViewEventPage> {
   }
 
   void getEvent() async {    
-    final user = await storage.getUserAuth();
-
     final responseEvent = await eventsService.getEventById(eventId);
     final responseInformation =
         await informationService.getAllEventInformation(eventId);
@@ -293,12 +289,19 @@ class _ViewEventPageState extends State<ViewEventPage> {
         await itinerariesService.getAllEventItineraries(eventId);
     final organizerResponse =
         await organizerService.getOrganizerById(responseEvent.organizerId);
-    final isFollowingOrganizer = 
-        await followOrganizerService.isFollowingOrganizer(user.id, responseEvent.organizerId);
-    final isFollowingEvent = 
-        await followEventsService.isFollowingEvent(user.id, eventId);
     final placeResponse =
         await placeService.getPlaceById(responseEvent.placeId); 
+
+    var isFollowingOrganizer = false;
+    var isFollowingEvent = false;
+
+    final user = await storage.getUserAuth();
+    if (user.role == 'customer') {
+      isFollowingOrganizer = 
+        await followOrganizerService.isFollowingOrganizer(user.id, responseEvent.organizerId);
+      isFollowingEvent = 
+        await followEventsService.isFollowingEvent(user.id, eventId);
+    }
 
     setState(() {
       event = responseEvent;
@@ -306,6 +309,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
       itineraries = responseItineraries;
       organizer = organizerResponse;
       organizerName = '${organizer!.firstName} ${organizer!.lastName}';
+
       isFollowOrganizer = isFollowingOrganizer;
       isFollowEvent = isFollowingEvent;
       place = placeResponse;

@@ -44,7 +44,6 @@ class PlaceService {
     final response = await http.get(
       Uri.parse('$basePath/districts/1/places/$placeId')
     );
-    var source = Utf8Decoder().convert(response.bodyBytes);
     PlaceResponse placeResponse = PlaceResponse.fromJson(jsonDecode(response.body));
     return placeResponse;
   }
