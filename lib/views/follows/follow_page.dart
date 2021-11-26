@@ -38,7 +38,7 @@ class _FollowPage extends State<FollowPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: navBar(context),
+        appBar: navBar(context, title: "Follow events"),
         bottomNavigationBar: bottomNav(context, 2),
         body: SingleChildScrollView(
           child: Column(

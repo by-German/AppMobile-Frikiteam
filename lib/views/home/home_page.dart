@@ -30,13 +30,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: navBar(context),
+      appBar: navBar(context, title: "Home page"),
       bottomNavigationBar: bottomNav(context, 0),
       body: ListView(
         children: [
           Container(
             color: Color.fromRGBO(24, 22, 26, 1),
-            child: first(),
+            child: mainImage(),
           ),
           Container(
             padding: EdgeInsets.only(top: 25, bottom: 25),
@@ -48,14 +48,17 @@ class _HomePageState extends State<HomePage> {
             width: double.infinity,
             color: Colors.white,
             child: Container(
-              height: 450,
+              height: 320,
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemCount: eventsMoment.length,
                 itemBuilder: (context, index){
                   Event event = eventsMoment[index];
-                  return asd(title: event.name, description: event.information, index: index, id: event.id, design: 0, image: event.logo);
+                  return GestureDetector(
+                    child: _eventCard(title: event.name, description: event.information, index: index, id: event.id, design: 0, image: event.logo),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => ViewEventPage(eventId: event.id,))),  
+                  );
                 },
               ),
             )
@@ -70,15 +73,17 @@ class _HomePageState extends State<HomePage> {
               width: double.infinity,
               color: Color.fromRGBO(24, 22, 26, 1),
               child: Container(
-                height: 450,
+                height: 320,
                 child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-
                   itemCount: eventsDate.length,
                   itemBuilder: (context, index){
                     Event event = eventsDate[index];
-                    return asd(title: event.name, description: event.information, index: index, id: event.id, design: 0, image: event.logo);
+                    return GestureDetector(
+                      child: _eventCard(title: event.name, description: event.information, index: index, id: event.id, design: 0, image: event.logo),
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => ViewEventPage(eventId: event.id,))),                        
+                    );
                   },
                 ),
               )
@@ -91,7 +96,7 @@ class _HomePageState extends State<HomePage> {
   //Option 0 is with background white
   //Option 1 is with background dark
 
-  Widget asd({required title, required description, required id, required index, required design, required image}) {
+  Widget _eventCard({required title, required description, required id, required index, required design, required image}) {
     return Container(
       margin: (index == 0) ? EdgeInsets.only(right: 20, left: 20) : EdgeInsets.only(right: 20),
       width: 200,
@@ -118,8 +123,11 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Image.network(
                   image,
+                  fit: BoxFit.fill,
                   errorBuilder: (ctx, ex, trace) =>
-                      Image.network(image),
+                      Image.network(image,
+                        fit: BoxFit.fill,
+                      ),
                 ),
               ),
             ),
@@ -130,53 +138,20 @@ class _HomePageState extends State<HomePage> {
             height: 80,
             child: Center(child: Text(description, textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Color.fromRGBO(111, 111, 191, 1))),) ,
           ),
-          Container(
-            margin: EdgeInsets.only(top: 15, bottom: 15),
-            child: FlatButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => ViewEventPage(eventId: id,)));
-              },
-              child: Text("Informacion",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold)),
-              color: Color.fromRGBO(24, 22, 26, 1),
-              minWidth: 120,
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(bottom: 15),
-            child: FlatButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => ViewEventPage(eventId: id,)));
-              },
-              child: Text("Agregar",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold)),
-              color: Color.fromRGBO(147, 147, 188, 1),
-              minWidth: 120,
-            ),
-          ),
         ],
       ),
 
     );
   }
 
-  Widget first() {
+  Widget mainImage() {
     return Column(
       children: <Widget>[
         Container(
-          height: 250,
-          margin: new EdgeInsets.symmetric(vertical: 30.0),
+          width: MediaQuery.of(context).size.width,
           child: Image.asset(
             "assets/images/home.png",
-            width: 300.0,
+            fit: BoxFit.fill,
           ),
         )
       ],
