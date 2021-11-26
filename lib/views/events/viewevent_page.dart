@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:frikiteam/models/events/event.dart';
 import 'package:frikiteam/models/events/event_information.dart';
 import 'package:frikiteam/models/events/itinerary.dart';
+import 'package:frikiteam/models/places/place_response.dart';
 import 'package:frikiteam/models/users/organizer.dart';
 import 'package:frikiteam/services/events/event_information_service.dart';
 import 'package:frikiteam/services/events/event_itineraries.dart';
@@ -12,6 +13,7 @@ import 'package:frikiteam/services/events/events_service.dart';
 import 'package:frikiteam/services/follows/follow_events_service.dart';
 import 'package:frikiteam/services/follows/follow_organizer_service.dart';
 import 'package:frikiteam/services/payment/payment_service.dart';
+import 'package:frikiteam/services/places/place_service.dart';
 import 'package:frikiteam/services/users/organizer_service.dart';
 import 'package:frikiteam/storage/storage.dart';
 
@@ -35,8 +37,10 @@ class _ViewEventPageState extends State<ViewEventPage> {
   OrganizerService organizerService = OrganizerService();
   FollowOrganizerService followOrganizerService = FollowOrganizerService();
   FollowEventsService followEventsService = FollowEventsService();
+  PlaceService placeService = PlaceService();
 
   Event? event;
+  PlaceResponse? place;
   Organizer? organizer;
   String organizerName = "";
   List<Itinerary> itineraries = [];
@@ -94,6 +98,10 @@ class _ViewEventPageState extends State<ViewEventPage> {
                           ? detailedCard(context, index, 400)
                           : loadingData()),
             ),
+            title(text: "Event location"),
+            SizedBox(height: 10,),
+            _eventLocation(),
+            SizedBox(height: 10,),
             title(text: "Organizer"),
             organizerName.isNotEmpty
                 ? circleAvatar(name: organizerName)
@@ -222,6 +230,23 @@ class _ViewEventPageState extends State<ViewEventPage> {
     );
   }
 
+  Widget _eventLocation() => Container(
+    child: place != null ? Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(place!.country + " - ", style: TextStyle(fontSize: 20),),
+            Text(place!.city + " - ", style: TextStyle(fontSize: 20),),
+            Text(place!.district, style: TextStyle(fontSize: 20),),
+          ],
+        ),
+        SizedBox(height: 8,),
+        Text(place!.name, style: TextStyle(fontSize: 20),)
+      ],
+    ): Text("Location not defined"),
+  );
+
   Widget circleAvatar({required String name}) {
     return Column(
       children: [
@@ -272,6 +297,8 @@ class _ViewEventPageState extends State<ViewEventPage> {
         await followOrganizerService.isFollowingOrganizer(user.id, responseEvent.organizerId);
     final isFollowingEvent = 
         await followEventsService.isFollowingEvent(user.id, eventId);
+    final placeResponse =
+        await placeService.getPlaceById(responseEvent.placeId); 
 
     setState(() {
       event = responseEvent;
@@ -281,6 +308,7 @@ class _ViewEventPageState extends State<ViewEventPage> {
       organizerName = '${organizer!.firstName} ${organizer!.lastName}';
       isFollowOrganizer = isFollowingOrganizer;
       isFollowEvent = isFollowingEvent;
+      place = placeResponse;
     });
   }
 
