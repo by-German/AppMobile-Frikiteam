@@ -11,7 +11,6 @@ class EventsSevice {
     var source = Utf8Decoder().convert(response.bodyBytes);
     var events = jsonDecode(source) as List;
 
-    print(events);
     return events.map((e) => Event.fromJson(e)).toList();
   }
 

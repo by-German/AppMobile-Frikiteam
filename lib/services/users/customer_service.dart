@@ -25,4 +25,16 @@ class CustomerService {
     return await userAuthService.auth(user.email, user.password);
   }
 
+  Future<Customer> updateCustomer({required int id, required String firstName, required String lastName, required String email, required String password}) async {
+    Customer customer = Customer(id: 0, firstName: firstName, lastName: lastName, email: email, password: password, logo: "default", dateBirth: "2021-11-26T03:16:17.770Z");
+
+    var response = await http.put(
+      Uri.parse('$basePath/customers/$id'),
+      body: jsonEncode(customer),
+      headers: {"Content-Type": "application/json"}
+    );
+
+    return Customer.fromJson(jsonDecode(response.body));
+  }
+
 }

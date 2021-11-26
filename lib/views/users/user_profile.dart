@@ -24,7 +24,7 @@ class _UserProfileState extends State<UserProfile> {
   String email = '';
   String firstname = '';
   String lastname = '';
-  String passwor = '';
+  String password = '';
 
   bool _loading = false;
 
@@ -64,15 +64,24 @@ class _UserProfileState extends State<UserProfile> {
       children: [
         Container(
           padding: EdgeInsets.all(20),
-          child: Container(
+          child: logo.isNotEmpty ? Container(
             width: 120.0,
             height: 120.0,
             decoration: new BoxDecoration(
                 shape: BoxShape.circle,
+                border: Border.all(color: Colors.white),
                 image: new DecorationImage(
                     fit: BoxFit.cover,
-                    image: new NetworkImage(logo)))),
+                    image: new NetworkImage(logo)))): CircularProgressIndicator(),
         ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: IconButton(
+            icon: Icon(Icons.edit),
+            color: Colors.white, 
+            onPressed: () => _onButtonPressed(),),
+        )
       ]
     );
   }
@@ -132,13 +141,90 @@ class _UserProfileState extends State<UserProfile> {
       lastname = response.lastName;
       email = response.email;
       logo = response.logo;
+      password = response.password;
     });
+    print(password);
+
+
   }
 
   void signOff() async {
     await storage.removeAuthUser();
     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
   }
+
+  void _onButtonPressed() {
+    showModalBottomSheet(context: context, builder: (context) {
+      return SingleChildScrollView(
+        padding: EdgeInsets.all(35),
+        child: Container(
+          child: Column(
+            children: [
+                  Text("UPDATE INFORMATION:", style: TextStyle(fontSize: 20)),
+                  SizedBox(height: 10,),
+                  TextField(
+                    keyboardType: TextInputType.name,
+                    onChanged: (value) => firstname = value,
+                    decoration: inputDecoration(text: firstname, icon: Icons.text_fields)
+                  ),
+                  SizedBox(height: 10,),
+                  TextField(
+                    keyboardType: TextInputType.name,
+                    onChanged: (value) => lastname = value,
+                    decoration: inputDecoration(text: lastname, icon: Icons.text_fields)
+                  ),
+                  SizedBox(height: 10,),
+                  TextField(
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) => email = value,
+                    decoration: inputDecoration(text: email, icon: Icons.email)
+                  ),
+                  SizedBox(height: 10,),
+                  TextField(
+                    keyboardType: TextInputType.visiblePassword,
+                    onChanged: (value) => password = value,
+                    obscureText: true,
+                    decoration: inputDecoration(text: "Password", icon: Icons.password)
+                  ),
+                  SizedBox(height: 20,),
+                  MaterialButton(onPressed: () => _updateUser(),
+                    child: Text("SAVE", style: TextStyle(color: Colors.white),),
+                    color: Colors.deepPurple,
+                    minWidth: 200,
+                  )
+                ],
+              ),
+        ),
+      );
+    });
+  }
+
+void _updateUser() async {
+    final user = await storage.getUserAuth();
+    var response;
+
+    if (user.role == 'organizer') {
+      response = await organizerService.updateOrganizer(id: user.id, firstName: firstname, lastName: lastname, email: email, password: password);
+    } else {
+      response = await customerService.updateCustomer(id: user.id, firstName: firstname, lastName: lastname, email: email, password: password);
+    }
+
+    setState(() {
+      firstname = response.firstName;
+      lastname = response.lastName;
+      email = response.email;
+      logo = response.logo;
+      password = response.password;
+    });
+
+    print(password);
+}
+
+InputDecoration inputDecoration({required String text, required IconData icon}) => InputDecoration(
+      labelText: text,
+      suffixIcon: Icon(icon),
+    );
+
 }
 
 
