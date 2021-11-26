@@ -3,6 +3,7 @@ import 'package:frikiteam/services/users/customer_service.dart';
 import 'package:frikiteam/services/users/organizer_service.dart';
 import 'package:frikiteam/services/users/user_auth_service.dart';
 import 'package:frikiteam/views/home/home_page.dart';
+import 'package:frikiteam/views/users/terms_cond.dart';
 
 class RegisterPage extends StatefulWidget{
   RegisterPage({Key? key}) : super(key: key);
@@ -113,8 +114,7 @@ class _RegisterPageState extends State<RegisterPage>{
                                     MaterialButton(
                                       textColor: Colors.purple[200],
                                       onPressed: (){
-                                        // TODO: view terms and condt. or Popview
-                                        Navigator.pop(context);
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => TermsCond()));
                                       },
                                       child: Text("Readme")
                                     ),
